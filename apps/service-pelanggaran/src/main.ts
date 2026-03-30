@@ -16,6 +16,18 @@ async function bootstrap() {
     }
 
     app.setGlobalPrefix('api');
+
+    app.setGlobalPrefix('api');
+
+    // 🔥 UBAH BAGIAN INI MENJADI EKSPLISIT 🔥
+    app.enableCors({
+        origin: '*', // Izinkan semua aplikasi Frontend untuk nembak API ini
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+        credentials: true,
+    });
+
+    app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+
     app.enableCors();
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 

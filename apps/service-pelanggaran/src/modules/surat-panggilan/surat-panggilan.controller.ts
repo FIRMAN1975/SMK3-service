@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Param, Body, Res } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, Res } from '@nestjs/common';
 import type { Response } from 'express';
 import { SuratPanggilanService } from './surat-panggilan.service';
 import { CreateSuratDto } from './dto/create-surat.dto';
@@ -28,6 +28,11 @@ export class SuratPanggilanController {
         return await this.suratService.createSurat(createSuratDto);
     }
 
+    @Put(':id')
+    async updateSurat(@Param('id') id: string, @Body() updateSuratDto: CreateSuratDto) {
+        return await this.suratService.updateSurat(id, updateSuratDto);
+    }
+
     @Get()
     async getAllSurat() {
         return await this.suratService.getAllSurat();
@@ -41,13 +46,10 @@ export class SuratPanggilanController {
     // ==========================================
     // 3. AKSI & INTEGRASI
     // ==========================================
-
-    // 🔥 Endpoint Download PDF 🔥
     @Get(':id/pdf')
     async downloadPdf(@Param('id') id: string, @Res() res: Response) {
         const { buffer, fileName } = await this.suratService.generatePdf(id);
 
-        // Set Header untuk memaksa browser mengunduh file PDF
         res.set({
             'Content-Type': 'application/pdf',
             'Content-Disposition': `attachment; filename="${fileName}"`,

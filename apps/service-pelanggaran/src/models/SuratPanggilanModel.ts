@@ -40,7 +40,7 @@ const SuratPanggilanModel = dbPelanggaran.define("t_surat_panggilan", {
 }, {
     freezeTableName: true,
     tableName: 't_surat_panggilan',
-    timestamps: false
+    timestamps: true
 });
 
 export default SuratPanggilanModel;
