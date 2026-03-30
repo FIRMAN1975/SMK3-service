@@ -1,0 +1,414 @@
+### ============================================================
+### API SMK NEGERI 3 BALIGE
+### Base URL: http://localhost:3000/api
+### Gunakan REST Client extension di VS Code untuk menjalankan
+### ============================================================
+
+@baseUrl = http://localhost:3000/api
+
+
+### ============================================================
+### 1. SEJARAH & IDENTITAS
+### ============================================================
+
+### GET - Ambil semua data sejarah identitas
+GET {{baseUrl}}/sejarah-identitas
+Content-Type: application/json
+
+###
+
+### GET - Ambil data sejarah identitas by ID
+GET {{baseUrl}}/sejarah-identitas/950e3da6-5bce-4403-b513-7c1282638cb8
+Content-Type: application/json
+
+###
+
+### POST - Tambah data sejarah identitas
+POST {{baseUrl}}/sejarah-identitas
+Content-Type: application/json
+
+{
+  "tahun_berdiri": "1995",
+  "deskripsi": "SMK Negeri 3 Balige berdiri sejak tahun 1995 dan telah berkembang menjadi institusi vokasi unggulan yang fokus pada integrasi teknologi informasi dalam setiap aspek pendidikan."
+}
+
+###
+
+### PUT - Update data sejarah identitas by ID
+PUT {{baseUrl}}/sejarah-identitas/isi-id-disini
+Content-Type: application/json
+
+{
+  "tahun_berdiri": "1995",
+  "deskripsi": "Deskripsi yang telah diperbarui..."
+}
+
+###
+
+### DELETE - Hapus data sejarah identitas by ID
+DELETE {{baseUrl}}/sejarah-identitas/isi-id-disini
+Content-Type: application/json
+
+
+### ============================================================
+### 2. VISI & MISI
+### ============================================================
+
+### GET - Ambil semua data visi & misi
+GET {{baseUrl}}/visi-misi
+Content-Type: application/json
+
+###
+
+### GET - Ambil data visi & misi by ID
+GET {{baseUrl}}/visi-misi/isi-id-disini
+Content-Type: application/json
+
+###
+
+### POST - Tambah data VISI
+POST {{baseUrl}}/visi-misi
+Content-Type: application/json
+
+{
+  "tipe": "visi",
+  "deskripsi": "Menjadi sekolah unggulan yang menghasilkan lulusan berakhlak mulia, berprestasi, dan berwawasan global pada tahun 2030."
+}
+
+###
+
+### POST - Tambah data MISI
+POST {{baseUrl}}/visi-misi
+Content-Type: application/json
+
+{
+  "tipe": "misi",
+  "deskripsi": "Mengembangkan potensi siswa secara optimal melalui pembelajaran yang inovatif dan relevan dengan dunia industri."
+}
+
+###
+
+### PUT - Update data visi & misi by ID
+PUT {{baseUrl}}/visi-misi/isi-id-disini
+Content-Type: application/json
+
+{
+  "tipe": "visi",
+  "deskripsi": "Deskripsi visi yang diperbarui..."
+}
+
+###
+
+### DELETE - Hapus data visi & misi by ID
+DELETE {{baseUrl}}/visi-misi/isi-id-disini
+Content-Type: application/json
+
+
+### ============================================================
+### 3. STRUKTUR ORGANISASI
+### ⚠️  Upload file menggunakan multipart/form-data
+###    Ganti path file sesuai lokasi file di komputer kamu
+### ============================================================
+
+### GET - Ambil semua data struktur organisasi
+GET {{baseUrl}}/struktur-organisasi
+Content-Type: application/json
+
+###
+
+### GET - Ambil data struktur organisasi by ID
+GET {{baseUrl}}/struktur-organisasi/0948ca74-e307-4bf5-a429-32a23fe7c89e
+Content-Type: application/json
+
+###
+
+### POST - Upload gambar struktur organisasi
+POST {{baseUrl}}/struktur-organisasi
+Content-Type: multipart/form-data; boundary=----FormBoundary
+
+------FormBoundary
+Content-Disposition: form-data; name="gambar"; filename="struktur.png"
+Content-Type: image/jpg
+
+< images.jpg
+
+------FormBoundary--
+
+###
+
+### PUT - Update gambar struktur organisasi by ID
+PUT {{baseUrl}}/struktur-organisasi/isi-id-disini
+Content-Type: multipart/form-data; boundary=----FormBoundary
+
+------FormBoundary
+Content-Disposition: form-data; name="gambar"; filename="struktur-baru.png"
+Content-Type: image/png
+
+< C:/path/to/gambar-struktur-baru.png
+
+------FormBoundary--
+
+###
+
+### DELETE - Hapus data struktur organisasi by ID
+DELETE {{baseUrl}}/struktur-organisasi/isi-id-disini
+Content-Type: application/json
+
+
+### ============================================================
+### 4. FASILITAS & SARANA BELAJAR
+### ⚠️  Upload foto menggunakan multipart/form-data
+### ============================================================
+
+### GET - Ambil semua data fasilitas
+GET {{baseUrl}}/fasilitas
+Content-Type: application/json
+
+###
+
+### GET - Ambil data fasilitas by ID
+GET {{baseUrl}}/fasilitas/isi-id-disini
+Content-Type: application/json
+
+###
+
+### POST - Tambah fasilitas dengan foto
+POST {{baseUrl}}/fasilitas
+Content-Type: multipart/form-data; boundary=----FormBoundary
+
+------FormBoundary
+Content-Disposition: form-data; name="nama_fasilitas"
+
+Lab Komputer & Jaringan
+------FormBoundary
+Content-Disposition: form-data; name="deskripsi"
+
+Laboratorium komputer dengan 40 unit PC dan koneksi internet berkecepatan tinggi
+------FormBoundary
+Content-Disposition: form-data; name="foto"; filename="lab-komputer.png"
+Content-Type: image/png
+
+< C:/path/to/foto-fasilitas.png
+
+------FormBoundary--
+
+###
+
+### POST - Tambah fasilitas tanpa foto
+POST {{baseUrl}}/fasilitas
+Content-Type: application/json
+
+{
+  "nama_fasilitas": "Lapangan Olahraga",
+  "deskripsi": "Lapangan olahraga serbaguna untuk kegiatan ekstrakurikuler"
+}
+
+###
+
+### PUT - Update fasilitas by ID
+PUT {{baseUrl}}/fasilitas/isi-id-disini
+Content-Type: application/json
+
+{
+  "nama_fasilitas": "Lab Komputer & Jaringan (Updated)",
+  "deskripsi": "Deskripsi yang diperbarui"
+}
+
+###
+
+### DELETE - Hapus data fasilitas by ID
+DELETE {{baseUrl}}/fasilitas/isi-id-disini
+Content-Type: application/json
+
+
+### ============================================================
+### 5. AKREDITASI & PRESTASI
+### ============================================================
+
+### GET - Ambil semua data prestasi
+GET {{baseUrl}}/prestasi
+Content-Type: application/json
+
+###
+
+### GET - Ambil data prestasi by ID
+GET {{baseUrl}}/prestasi/isi-id-disini
+Content-Type: application/json
+
+###
+
+### POST - Tambah data prestasi
+POST {{baseUrl}}/prestasi
+Content-Type: application/json
+
+{
+  "judul": "Juara I LKS Bidang Electronic Application",
+  "tingkat": "provinsi",
+  "tahun": "2023",
+  "keterangan": "Lomba Kompetensi Siswa Tingkat Provinsi Sumatera Utara"
+}
+
+###
+
+### POST - Tambah prestasi tingkat nasional
+POST {{baseUrl}}/prestasi
+Content-Type: application/json
+
+{
+  "judul": "Juara II LKS Bidang Automobile Technology",
+  "tingkat": "nasional",
+  "tahun": "2022",
+  "keterangan": "Lomba Kompetensi Siswa Tingkat Nasional"
+}
+
+###
+
+### PUT - Update data prestasi by ID
+PUT {{baseUrl}}/prestasi/isi-id-disini
+Content-Type: application/json
+
+{
+  "judul": "Judul prestasi yang diperbarui",
+  "tingkat": "nasional",
+  "tahun": "2024"
+}
+
+###
+
+### DELETE - Hapus data prestasi by ID
+DELETE {{baseUrl}}/prestasi/isi-id-disini
+Content-Type: application/json
+
+
+### ============================================================
+### 6. PROGRAM KEAHLIAN / JURUSAN
+### ============================================================
+
+### GET - Ambil semua program keahlian
+GET {{baseUrl}}/program-keahlian
+Content-Type: application/json
+
+###
+
+### GET - Ambil data program keahlian by ID
+GET {{baseUrl}}/program-keahlian/isi-id-disini
+Content-Type: application/json
+
+###
+
+### POST - Tambah program keahlian TKJ
+POST {{baseUrl}}/program-keahlian
+Content-Type: application/json
+
+{
+  "nama_jurusan": "Teknik Komputer & Jaringan",
+  "deskripsi": "Fokus pada infrastruktur jaringan dan keamanan siber",
+  "icon": "tkj-icon.png"
+}
+
+###
+
+### POST - Tambah program keahlian Multimedia
+POST {{baseUrl}}/program-keahlian
+Content-Type: application/json
+
+{
+  "nama_jurusan": "Multimedia",
+  "deskripsi": "Pengembangan kreatif di bidang desain dan produksi media",
+  "icon": "multimedia-icon.png"
+}
+
+###
+
+### POST - Tambah program keahlian Akuntansi
+POST {{baseUrl}}/program-keahlian
+Content-Type: application/json
+
+{
+  "nama_jurusan": "Akuntansi",
+  "deskripsi": "Manajemen keuangan dan pelaporan akuntansi modern",
+  "icon": "akuntansi-icon.png"
+}
+
+###
+
+### PUT - Update program keahlian by ID
+PUT {{baseUrl}}/program-keahlian/isi-id-disini
+Content-Type: application/json
+
+{
+  "nama_jurusan": "Teknik Komputer & Jaringan (Updated)",
+  "deskripsi": "Deskripsi yang diperbarui"
+}
+
+###
+
+### DELETE - Hapus program keahlian by ID
+DELETE {{baseUrl}}/program-keahlian/isi-id-disini
+Content-Type: application/json
+
+
+### ============================================================
+### 7. MITRA KERJASAMA
+### ⚠️  Upload logo menggunakan multipart/form-data
+### ============================================================
+
+### GET - Ambil semua mitra kerjasama
+GET {{baseUrl}}/mitra-kerjasama
+Content-Type: application/json
+
+###
+
+### GET - Ambil data mitra kerjasama by ID
+GET {{baseUrl}}/mitra-kerjasama/isi-id-disini
+Content-Type: application/json
+
+###
+
+### POST - Tambah mitra dengan logo
+POST {{baseUrl}}/mitra-kerjasama
+Content-Type: multipart/form-data; boundary=----FormBoundary
+
+------FormBoundary
+Content-Disposition: form-data; name="nama_mitra"
+
+PT. PLN (Persero)
+------FormBoundary
+Content-Disposition: form-data; name="deskripsi"
+
+Perusahaan listrik negara
+------FormBoundary
+Content-Disposition: form-data; name="logo"; filename="pln-logo.png"
+Content-Type: image/png
+
+< C:/path/to/logo-mitra.png
+
+------FormBoundary--
+
+###
+
+### POST - Tambah mitra tanpa logo
+POST {{baseUrl}}/mitra-kerjasama
+Content-Type: application/json
+
+{
+  "nama_mitra": "PT. Telkom Indonesia",
+  "deskripsi": "Perusahaan telekomunikasi nasional"
+}
+
+###
+
+### PUT - Update mitra kerjasama by ID
+PUT {{baseUrl}}/mitra-kerjasama/isi-id-disini
+Content-Type: application/json
+
+{
+  "nama_mitra": "PT. PLN (Persero) Updated",
+  "deskripsi": "Deskripsi yang diperbarui"
+}
+
+###
+
+### DELETE - Hapus mitra kerjasama by ID
+DELETE {{baseUrl}}/mitra-kerjasama/isi-id-disini
+Content-Type: application/json

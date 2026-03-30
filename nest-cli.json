@@ -10,6 +10,15 @@
   "monorepo": true,
   "root": "apps/sekolah-monorepo",
   "projects": {
+    "api-gateway": {
+      "type": "application",
+      "root": "apps/api-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+      }
+    },
     "common": {
       "type": "library",
       "root": "libs/common",
@@ -52,7 +61,8 @@
       "entryFile": "main",
       "sourceRoot": "apps/service-pelanggaran/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/service-pelanggaran/tsconfig.app.json"
+        "tsConfigPath": "apps/service-pelanggaran/tsconfig.app.json",
+        "webpack": false
       }
     },
     "service-portofolio": {

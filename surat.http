@@ -1,0 +1,81 @@
+### ==========================================
+### VARIABEL GLOBAL
+### (Bisa kamu ganti ID-nya sesuai kebutuhan)
+### ==========================================
+@baseUrl = http://localhost:3001/api/surat-panggilan
+
+@idSiswaJenifer = 6110dc1d-09d8-4975-b3a6-63fc866897a3
+@idSuratTest = fae64e69-06ac-4a40-aab7-6ce29cc23ffe
+
+@idWaka = 8a07c551-c976-44bb-98e4-d17337a3634e
+@idGuruBk = e07a985d-583a-44bc-a771-80059a18b5af
+@idWalikelas = 16f8168f-77c3-43e4-b522-5e12a17ba6c0
+
+
+### ==========================================
+### 1. KELOMPOK MASTER DATA
+### ==========================================
+
+### Ambil Data Siswa (Untuk Dropdown Form)
+GET {{baseUrl}}/master/siswa
+Accept: application/json
+
+###
+
+### Ambil Data Guru (Untuk Dropdown Penandatangan)
+GET {{baseUrl}}/master/guru
+Accept: application/json
+
+
+### ==========================================
+### 2. KELOMPOK TRANSAKSI (CRUD SURAT)
+### ==========================================
+
+### Buat Surat Panggilan Baru (POST)
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+  "id_siswa": "{{idSiswaJenifer}}",
+  "no_surat": "421.5/002/SMKN3/2026",
+  "permasalahan": "Sering bolos pada jam pelajaran produktif dan tidur di kelas.",
+  "tanggal_panggilan": "2026-04-10",
+  "waktu_panggilan": "09.00 WIB - Selesai",
+  "tempat": "Ruang BK SMK Negeri 3 Balige",
+  "id_penandatangan": [
+    "{{idWaka}}",
+    "{{idGuruBk}}",
+    "{{idWalikelas}}"
+  ]
+}
+
+###
+
+### Ambil Riwayat Semua Surat (GET ALL)
+GET {{baseUrl}}
+Accept: application/json
+
+###
+
+### Hapus Surat (DELETE)
+### Ganti variabel idSuratTest dengan ID surat yang mau dihapus
+DELETE {{baseUrl}}/{{idSuratTest}}
+Accept: application/json
+
+
+### ==========================================
+### 3. KELOMPOK AKSI / INTEGRASI
+### ==========================================
+
+### Generate Link WhatsApp Ortu (GET)
+GET {{baseUrl}}/{{idSuratTest}}/whatsapp
+Accept: application/json
+
+###
+
+### Download PDF Surat (GET)
+### ⚠️ CATATAN PENTING:
+### Jika kamu klik "Send Request" untuk PDF di VS Code, hasilnya akan berupa teks biner (simbol berantakan)
+### karena VS Code tidak bisa merender PDF langsung di tab response.
+### Untuk melihat PDF-nya, selalu gunakan BROWSER (Chrome/Edge/Firefox).
+GET {{baseUrl}}/{{idSuratTest}}/pdf

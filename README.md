@@ -42,7 +42,23 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
+
+
+# seed database
+$ npx ts-node -r tsconfig-paths/register apps/service-pelanggaran/src/scripts/seed.ts
+
+# sync database
+$ npx ts-node -r tsconfig-paths/register apps/service-pelanggaran/src/scripts/sync.ts
+
+# install dependencies surat
+npm install puppeteer handlebars
+npm install --save-dev @types/puppeteer @types/handlebars
+
+# install dependencies profile
+npm install -D @types/multer
+
 ```
+
 
 ## Run tests
 

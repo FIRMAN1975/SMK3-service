@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Surat Panggilan</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            line-height: 1.5;
+            margin: 40px 50px;
+            color: black;
+        }
+
+        .kop-surat {
+            text-align: center;
+            border-bottom: 3px solid black;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .kop-surat h3,
+        .kop-surat h2,
+        .kop-surat h4 {
+            margin: 0;
+        }
+
+        .kop-surat p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tabel-info td {
+            vertical-align: top;
+            padding: 2px 0;
+        }
+
+        .tabel-info td:first-child {
+            width: 120px;
+        }
+
+        .tabel-info td:nth-child(2) {
+            width: 10px;
+        }
+
+        .isi-surat {
+            margin-top: 20px;
+            text-align: justify;
+        }
+
+        /* CSS Flexbox untuk Tanda Tangan Dinamis */
+        .ttd-container {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        .ttd-box {
+            width: 30%;
+            font-size: 14px;
+        }
+
+        .ttd-nama {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="kop-surat">
+        <h3>PEMERINTAH PROVINSI SUMATERA UTARA</h3>
+        <h2>DINAS PENDIDIKAN</h2>
+        <h2>SMK NEGERI 3 BALIGE</h2>
+        <p>Desa Lumban Pea, Kec. Balige Kab. Toba, Kode Pos 22311</p>
+    </div>
+
+    <div style="text-align: right; margin-bottom: 20px;">
+        Balige, {{tanggal_cetak}}
+    </div>
+
+    <table class="tabel-info">
+        <tr>
+            <td>Nomor</td>
+            <td>:</td>
+            <td>{{no_surat}}</td>
+        </tr>
+        <tr>
+            <td>Lampiran</td>
+            <td>:</td>
+            <td>-</td>
+        </tr>
+        <tr>
+            <td>Perihal</td>
+            <td>:</td>
+            <td><b>Panggilan Orang Tua / Wali</b></td>
+        </tr>
+    </table>
+
+    <div class="isi-surat">
+        <p>Yth. Bapak/Ibu Orang Tua/Wali Murid dari:<br>
+            <b>{{nama_siswa}}</b><br>
+            di Tempat
+        </p>
+
+        <p>Dengan hormat,</p>
+        <p>Sehubungan dengan perlunya penyelesaian masalah akademik/kedisiplinan siswa kita, kami mengharapkan kehadiran
+            Bapak/Ibu pada:</p>
+
+        <table class="tabel-info" style="margin-left: 30px; width: 90%;">
+            <tr>
+                <td>Hari / Tanggal</td>
+                <td>:</td>
+                <td>{{tanggal_panggilan}}</td>
+            </tr>
+            <tr>
+                <td>Waktu</td>
+                <td>:</td>
+                <td>{{waktu_panggilan}}</td>
+            </tr>
+            <tr>
+                <td>Tempat</td>
+                <td>:</td>
+                <td>{{tempat}}</td>
+            </tr>
+            <tr>
+                <td>Keperluan</td>
+                <td>:</td>
+                <td>Membicarakan permasalahan: <i>"{{permasalahan}}"</i></td>
+            </tr>
+        </table>
+
+        <p>Mengingat pentingnya pertemuan ini, kami sangat mengharapkan kehadiran Bapak/Ibu tepat pada waktunya.
+            Demikian surat panggilan ini kami sampaikan. Atas perhatian dan kerjasamanya, kami ucapkan terima kasih.</p>
+    </div>
+
+    <div class="ttd-container">
+        {{#each penandatangan}}
+        <div class="ttd-box">
+            Mengetahui,<br>
+            {{this.jabatan}}<br>
+            <br><br><br><br>
+            <span class="ttd-nama">{{this.nama}}</span><br>
+            {{#if this.nip}} NIP. {{this.nip}} {{/if}}
+        </div>
+        {{/each}}
+    </div>
+
+</body>
+
+</html>
