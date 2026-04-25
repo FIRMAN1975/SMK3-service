@@ -29,11 +29,10 @@ export class PortofolioService {
         }
     }
 
-    async findAll() {
+   async findAll() {
         try {
-            const data = await PortofolioModel.findAll({
-                order: [['createdAt', 'DESC']]
-            });
+            // Hapus order createdAt karena timestamps-nya false
+            const data = await PortofolioModel.findAll();
             return { status: 'success', data };
         } catch (error) {
             throw new Error(`Gagal mengambil data portofolio: ${error.message}`);

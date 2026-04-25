@@ -18,8 +18,8 @@ export enum ScheduleCategory {
 
 @Entity('schedules')
 export class Schedule {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ type: 'varchar', length: 255 })
   title: string;

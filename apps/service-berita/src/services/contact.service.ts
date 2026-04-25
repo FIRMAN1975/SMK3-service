@@ -30,7 +30,7 @@ export class ContactService {
     });
   }
 
-  async findById(id: string): Promise<Contact> {
+  async findById(id: number): Promise<Contact> {
     const contact = await this.contactRepository.findOne({
       where: { id },
     });
@@ -43,7 +43,7 @@ export class ContactService {
   }
 
   async update(
-    id: string,
+    id: number,
     updateContactDto: UpdateContactDto,
   ): Promise<Contact> {
     const contact = await this.findById(id);
@@ -51,12 +51,12 @@ export class ContactService {
     return await this.contactRepository.save(contact);
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     const contact = await this.findById(id);
     await this.contactRepository.remove(contact);
   }
 
-  async toggleActive(id: string): Promise<Contact> {
+  async toggleActive(id: number): Promise<Contact> {
     const contact = await this.findById(id);
     contact.isActive = !contact.isActive;
     return await this.contactRepository.save(contact);

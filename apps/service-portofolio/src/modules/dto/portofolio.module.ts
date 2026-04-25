@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { PortofolioController } from './portofolio.controller';
-import { PortofolioService } from './portofolio.service';
-import { Portofolio } from '../models/PortofolioModel';
+import { PortofolioController } from '../portofolio/portofolio.controller';
+import { PortofolioService } from '../portofolio/portofolio.service';
+import  Portofolio  from '../../models/PortofolioModel';
 
 @Module({
   imports: [

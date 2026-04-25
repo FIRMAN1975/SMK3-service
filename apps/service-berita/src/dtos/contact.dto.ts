@@ -58,7 +58,7 @@ export class UpdateContactDto {
 }
 
 export class ContactResponseDto {
-  id: string;
+  id: number;
   label: string;
   type: ContactType;
   value: string;

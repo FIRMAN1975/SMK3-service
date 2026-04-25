@@ -28,13 +28,13 @@ export class CategoryController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string) {
+  async findById(@Param('id') id: number) {
     return await this.categoryService.findById(id);
   }
 
   @Put(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
     return await this.categoryService.update(id, updateCategoryDto);
@@ -42,12 +42,12 @@ export class CategoryController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id') id: number) {
     await this.categoryService.delete(id);
   }
 
   @Put(':id/toggle-active')
-  async toggleActive(@Param('id') id: string) {
+  async toggleActive(@Param('id') id: number) {
     return await this.categoryService.toggleActive(id);
   }
 }

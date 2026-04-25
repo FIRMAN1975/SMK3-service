@@ -2,7 +2,7 @@ import {
   IsString,
   IsOptional,
   IsBoolean,
-  IsUUID,
+  IsNumber,
   Length,
   MaxLength,
 } from 'class-validator';
@@ -19,6 +19,11 @@ export class CreateNewsDto {
   @IsOptional()
   @IsString()
   @MaxLength(500)
+  description?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
   excerpt?: string;
 
   @IsOptional()
@@ -31,8 +36,8 @@ export class CreateNewsDto {
   author?: string;
 
   @IsOptional()
-  @IsUUID()
-  categoryId?: string;
+  @IsNumber()
+  categoryId?: number;
 
   @IsOptional()
   @IsBoolean()
@@ -53,6 +58,11 @@ export class UpdateNewsDto {
   @IsOptional()
   @IsString()
   @MaxLength(500)
+  description?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
   excerpt?: string;
 
   @IsOptional()
@@ -65,8 +75,8 @@ export class UpdateNewsDto {
   author?: string;
 
   @IsOptional()
-  @IsUUID()
-  categoryId?: string;
+  @IsNumber()
+  categoryId?: number;
 
   @IsOptional()
   @IsBoolean()
@@ -78,7 +88,7 @@ export class UpdateNewsDto {
 }
 
 export class NewsResponseDto {
-  id: string;
+  id: number;
   title: string;
   content: string;
   excerpt?: string;

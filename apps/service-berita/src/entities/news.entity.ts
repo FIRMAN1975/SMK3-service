@@ -11,14 +11,17 @@ import { Category } from './category.entity';
 
 @Entity('news')
 export class News {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ type: 'varchar', length: 255 })
   title: string;
 
   @Column({ type: 'text' })
   content: string;
+
+  @Column({ type: 'text', nullable: true })
+  description: string;
 
   @Column({ type: 'text', nullable: true })
   excerpt: string;

@@ -38,7 +38,11 @@ const PortofolioModel = dbPortofolio.define("portofolios", {
 }, {
     freezeTableName: true,
     tableName: 'portofolios',
-    timestamps: true // Menambahkan createdAt dan updatedAt secara otomatis
+    
+    // PERUBAHAN FINAL ADA DI 3 BARIS INI:
+    timestamps: true,           // 1. Nyalakan pengisian tanggal otomatis
+    createdAt: 'created_at',    // 2. Arahkan Sequelize ke nama kolom DB yang benar
+    updatedAt: 'updated_at'     // 3. Arahkan Sequelize ke nama kolom DB yang benar
 });
 
 export default PortofolioModel;

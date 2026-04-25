@@ -106,7 +106,7 @@ export class UpdateScheduleDto {
 }
 
 export class ScheduleResponseDto {
-  id: string;
+  id: number;
   title: string;
   description: string;
   date: Date;

@@ -7,7 +7,7 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { FasilitasService } from './fasilitas.service';
 import { CreateFasilitasDto, UpdateFasilitasDto } from './fasilitas.dto';
-import { normalizePath } from '../../../../../../../porto/SMK-3-Balige-Service/src/utils/toolsUtil';
+import { normalizePath } from '../../../../../libs/common/src/utils/toolsUtil';
 
 const multerOptions = {
   storage: diskStorage({
@@ -42,7 +42,8 @@ export class FasilitasController {
   @Post()
   @UseInterceptors(FileInterceptor('foto', multerOptions))
   create(@Body() dto: CreateFasilitasDto, @UploadedFile() file?: Express.Multer.File) {
-    return this.service.create(dto, file ? normalizePath(file.path) : undefined); // ✅ fix
+    const fotoPath = file ? normalizePath(file.path).replace(/^uploads[/\\]/, '') : undefined;
+    return this.service.create(dto, fotoPath);
   }
 
   @Put(':id')
@@ -52,7 +53,8 @@ export class FasilitasController {
     @Body() dto: UpdateFasilitasDto,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    return this.service.update(id, dto, file ? normalizePath(file.path) : undefined); // ✅ fix
+    const fotoPath = file ? normalizePath(file.path).replace(/^uploads[/\\]/, '') : undefined;
+    return this.service.update(id, dto, fotoPath);
   }
 
   @Delete(':id')

@@ -129,7 +129,7 @@ export class ScheduleService {
     });
   }
 
-  async findOne(id: string): Promise<Schedule> {
+  async findOne(id: number): Promise<Schedule> {
     const schedule = await this.scheduleRepository.findOne({
       where: { id },
     });
@@ -141,7 +141,7 @@ export class ScheduleService {
     return schedule;
   }
 
-  async update(id: string, updateScheduleDto: UpdateScheduleDto): Promise<Schedule> {
+  async update(id: number, updateScheduleDto: UpdateScheduleDto): Promise<Schedule> {
     const schedule = await this.findOne(id);
 
     Object.assign(schedule, updateScheduleDto);
@@ -149,7 +149,7 @@ export class ScheduleService {
     return this.scheduleRepository.save(schedule);
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(id: number): Promise<void> {
     const result = await this.scheduleRepository.delete(id);
 
     if (result.affected === 0) {
@@ -157,7 +157,7 @@ export class ScheduleService {
     }
   }
 
-  async toggleActive(id: string): Promise<Schedule> {
+  async toggleActive(id: number): Promise<Schedule> {
     const schedule = await this.findOne(id);
 
     schedule.isActive = !schedule.isActive;

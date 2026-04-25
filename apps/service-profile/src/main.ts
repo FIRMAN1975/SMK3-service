@@ -11,9 +11,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.enableCors();
 
-  // ✅ Serve folder uploads sebagai static files
-  // Gambar yang diupload bisa diakses via: http://localhost:3000/uploads/...
-  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+  app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: '/uploads',
   });
 

@@ -2,15 +2,16 @@ import { All, Controller, Req, Res, Logger } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { createProxyMiddleware, Options } from 'http-proxy-middleware';
 import { Roles } from '../auth/roles.decorator';
+import { Public } from '../auth/public.decorator';
 import { Role } from '@app/common';
 
 /** Service targets */
 const TARGETS: Record<string, string> = {
   pelanggaran: process.env.SERVICE_PELANGGARAN_URL || 'http://localhost:3001',
-  profile:     process.env.SERVICE_PROFILE_URL     || 'http://localhost:3002',
-  berita:      process.env.SERVICE_BERITA_URL      || 'http://localhost:3003',
-  portofolio:  process.env.SERVICE_PORTOFOLIO_URL  || 'http://localhost:3004',
-  management:  process.env.SERVICE_MANAGEMENT_URL  || 'http://localhost:3005',
+  profile: process.env.SERVICE_PROFILE_URL || 'http://localhost:3002',
+  berita: process.env.SERVICE_BERITA_URL || 'http://localhost:3003',
+  portofolio: process.env.SERVICE_PORTOFOLIO_URL || 'http://localhost:3004',
+  management: process.env.SERVICE_MANAGEMENT_URL || 'http://localhost:3005',
 };
 
 @Controller('api')
@@ -22,6 +23,13 @@ export class ProxyController {
   @Roles(Role.ADMIN, Role.GURU)
   proxyPelanggaran(@Req() req: Request, @Res() res: Response) {
     return this.forward('pelanggaran', req, res);
+  }
+
+  /* ── static files service-profile ── no auth required */
+  @All('profile/uploads/*path')
+  @Public()
+  proxyProfileUploads(@Req() req: Request, @Res() res: Response) {
+    return this.forward('profile', req, res);
   }
 
   /* ── profile ── all authenticated roles */
@@ -83,6 +91,6 @@ export class ProxyController {
       },
     };
 
-    return createProxyMiddleware(opts)(req, res, () => {});
+    return createProxyMiddleware(opts)(req, res, () => { });
   }
 }

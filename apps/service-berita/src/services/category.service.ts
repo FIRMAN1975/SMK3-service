@@ -24,7 +24,7 @@ export class CategoryService {
     });
   }
 
-  async findById(id: string): Promise<Category> {
+  async findById(id: number): Promise<Category> {
     const category = await this.categoryRepository.findOne({
       where: { id },
       relations: ['news'],
@@ -38,7 +38,7 @@ export class CategoryService {
   }
 
   async update(
-    id: string,
+    id: number,
     updateCategoryDto: UpdateCategoryDto,
   ): Promise<Category> {
     const category = await this.findById(id);
@@ -46,12 +46,12 @@ export class CategoryService {
     return await this.categoryRepository.save(category);
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     const category = await this.findById(id);
     await this.categoryRepository.remove(category);
   }
 
-  async toggleActive(id: string): Promise<Category> {
+  async toggleActive(id: number): Promise<Category> {
     const category = await this.findById(id);
     category.isActive = !category.isActive;
     return await this.categoryRepository.save(category);

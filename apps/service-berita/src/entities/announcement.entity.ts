@@ -15,14 +15,20 @@ export enum AnnouncementType {
 
 @Entity('announcements')
 export class Announcement {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ type: 'varchar', length: 255 })
   title: string;
 
   @Column({ type: 'text' })
   content: string;
+
+  @Column({ type: 'text', nullable: true })
+  description: string;
+
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  imageUrl: string;
 
   @Column({
     type: 'enum',

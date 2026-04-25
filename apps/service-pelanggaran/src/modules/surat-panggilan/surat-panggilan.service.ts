@@ -177,9 +177,9 @@ export class SuratPanggilanService {
 Dengan hormat,
 Sehubungan dengan perlunya penyelesaian masalah akademik/kedisiplinan anak kita, kami mengharapkan kehadiran Bapak/Ibu pada:
 
-📅 Tanggal: ${tanggal}
-⏰ Waktu: ${waktu}
-📍 Tempat: ${tempat}
+ Tanggal: ${tanggal}
+ Waktu: ${waktu}
+ Tempat: ${tempat}
 
 Mengingat pentingnya pertemuan ini, kami sangat mengharapkan kehadiran Bapak/Ibu tepat waktu. Surat panggilan resmi (PDF) akan kami lampirkan setelah pesan ini.
 

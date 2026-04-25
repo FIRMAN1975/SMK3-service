@@ -7,7 +7,7 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { MitraKerjasamaService } from './mitra-kerjasama.service';
 import { CreateMitraKerjasamaDto, UpdateMitraKerjasamaDto } from './mitra-kerjasama.dto';
-import { normalizePath } from '@app/common/utils/toolsUtil';
+import { normalizePath } from '../../../../../libs/common/src/utils/toolsUtil';
 
 const multerOptions = {
   storage: diskStorage({
@@ -42,7 +42,8 @@ export class MitraKerjasamaController {
   @Post()
   @UseInterceptors(FileInterceptor('logo', multerOptions))
   create(@Body() dto: CreateMitraKerjasamaDto, @UploadedFile() file?: Express.Multer.File) {
-    return this.service.create(dto, file ? normalizePath(file.path) : undefined); // ✅ fix
+    const logoPath = file ? normalizePath(file.path).replace(/^uploads[/\\]/, '') : undefined;
+    return this.service.create(dto, logoPath);
   }
 
   @Put(':id')
@@ -52,7 +53,8 @@ export class MitraKerjasamaController {
     @Body() dto: UpdateMitraKerjasamaDto,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    return this.service.update(id, dto, file ? normalizePath(file.path) : undefined); // ✅ fix
+    const logoPath = file ? normalizePath(file.path).replace(/^uploads[/\\]/, '') : undefined;
+    return this.service.update(id, dto, logoPath);
   }
 
   @Delete(':id')

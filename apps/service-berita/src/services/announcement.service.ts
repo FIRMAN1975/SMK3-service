@@ -57,7 +57,7 @@ export class AnnouncementService {
     });
   }
 
-  async findById(id: string): Promise<Announcement> {
+  async findById(id: number): Promise<Announcement> {
     const announcement = await this.announcementRepository.findOne({
       where: { id },
     });
@@ -93,7 +93,7 @@ export class AnnouncementService {
   }
 
   async update(
-    id: string,
+    id: number,
     updateAnnouncementDto: UpdateAnnouncementDto,
   ): Promise<Announcement> {
     const announcement = await this.findById(id);
@@ -101,12 +101,12 @@ export class AnnouncementService {
     return await this.announcementRepository.save(announcement);
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     const announcement = await this.findById(id);
     await this.announcementRepository.remove(announcement);
   }
 
-  async toggleActive(id: string): Promise<Announcement> {
+  async toggleActive(id: number): Promise<Announcement> {
     const announcement = await this.findById(id);
     announcement.isActive = !announcement.isActive;
     return await this.announcementRepository.save(announcement);

@@ -42,7 +42,7 @@ export class UpdateCategoryDto {
 }
 
 export class CategoryResponseDto {
-  id: string;
+  id: number;
   name: string;
   description?: string;
   color: string;

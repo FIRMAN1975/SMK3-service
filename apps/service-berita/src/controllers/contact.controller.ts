@@ -35,13 +35,13 @@ export class ContactController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string) {
+  async findById(@Param('id') id: number) {
     return await this.contactService.findById(id);
   }
 
   @Put(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updateContactDto: UpdateContactDto,
   ) {
     return await this.contactService.update(id, updateContactDto);
@@ -49,12 +49,12 @@ export class ContactController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id') id: number) {
     await this.contactService.delete(id);
   }
 
   @Put(':id/toggle-active')
-  async toggleActive(@Param('id') id: string) {
+  async toggleActive(@Param('id') id: number) {
     return await this.contactService.toggleActive(id);
   }
 }

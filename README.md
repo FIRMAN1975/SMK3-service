@@ -38,7 +38,7 @@ $ npm install
 $ npm run start
 
 # watch mode
-$ npm run start:dev
+$ 
 
 # production mode
 $ npm run start:prod
@@ -71,6 +71,8 @@ $ npm run test:e2e
 
 # test coverage
 $ npm run test:cov
+
+$ npm run start:dev service-berita
 ```
 
 ## Deployment

@@ -3,6 +3,7 @@ import { AppModule } from '../app.module';
 import { CategoryService } from '../services/category.service';
 import { ContactService } from '../services/contact.service';
 import { AnnouncementService } from '../services/announcement.service';
+import { AuthService } from '../services/auth.service';
 import { ContactType } from '../entities/contact.entity';
 import { AnnouncementType } from '../entities/announcement.entity';
 
@@ -12,10 +13,15 @@ async function seed() {
   const categoryService = app.get(CategoryService);
   const contactService = app.get(ContactService);
   const announcementService = app.get(AnnouncementService);
+  const authService = app.get(AuthService);
 
   console.log('🌱 Mulai seed database...');
 
   try {
+    // Seed Admin User
+    console.log('👤 Membuat user admin...');
+    await authService.createAdminIfNotExists();
+
     // Seed Categories
     console.log('📂 Membuat kategori...');
     const categories = await Promise.all([

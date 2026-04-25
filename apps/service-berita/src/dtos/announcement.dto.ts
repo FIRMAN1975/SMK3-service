@@ -5,6 +5,7 @@ import {
   IsEnum,
   Length,
   IsISO8601,
+  MaxLength,
 } from 'class-validator';
 import { AnnouncementType } from '../entities/announcement.entity';
 
@@ -16,6 +17,15 @@ export class CreateAnnouncementDto {
   @IsString()
   @Length(10)
   content: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  description?: string;
+
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
 
   @IsEnum(AnnouncementType)
   type: AnnouncementType;
@@ -41,6 +51,15 @@ export class UpdateAnnouncementDto {
   content?: string;
 
   @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  description?: string;
+
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
+
+  @IsOptional()
   @IsEnum(AnnouncementType)
   type?: AnnouncementType;
 
@@ -58,7 +77,7 @@ export class UpdateAnnouncementDto {
 }
 
 export class AnnouncementResponseDto {
-  id: string;
+  id: number;
   title: string;
   content: string;
   type: AnnouncementType;

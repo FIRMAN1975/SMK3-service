@@ -34,6 +34,9 @@ export class NewsService {
     news.author = createNewsDto.author || 'Admin';
     news.isFeatured = createNewsDto.isFeatured || false;
 
+    // 🔥 FIX PENTING
+    news.isActive = true;
+
     if (createNewsDto.categoryId) {
       news.category = await this.categoryService.findById(
         createNewsDto.categoryId,
@@ -50,15 +53,20 @@ export class NewsService {
   ): Promise<{ data: News[]; total: number; page: number; limit: number }> {
     const query = this.newsRepository.createQueryBuilder('news');
 
+    // 🔥 FIX: where dulu, baru andWhere
+    query.where('news.isActive = :isActive', { isActive: true });
+
     if (categoryId) {
-      query.where('news.categoryId = :categoryId', { categoryId });
+      query.andWhere('news.categoryId = :categoryId', { categoryId });
     }
 
-    query.andWhere('news.isActive = :isActive', { isActive: true });
     query.orderBy('news.createdAt', 'DESC');
 
     const total = await query.getCount();
-    const data = await query.skip((page - 1) * limit).take(limit).getMany();
+    const data = await query
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getMany();
 
     return { data, total, page, limit };
   }
@@ -79,7 +87,7 @@ export class NewsService {
     });
   }
 
-  async findById(id: string): Promise<News> {
+  async findById(id: number): Promise<News> {
     const news = await this.newsRepository.findOne({
       where: { id },
       relations: ['category'],
@@ -118,7 +126,7 @@ export class NewsService {
     });
   }
 
-  async update(id: string, updateNewsDto: UpdateNewsDto): Promise<News> {
+  async update(id: number, updateNewsDto: UpdateNewsDto): Promise<News> {
     const news = await this.findById(id);
 
     if (updateNewsDto.title) {
@@ -159,24 +167,24 @@ export class NewsService {
     return await this.newsRepository.save(news);
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     const news = await this.findById(id);
     await this.newsRepository.remove(news);
   }
 
-  async incrementViews(id: string): Promise<News> {
+  async incrementViews(id: number): Promise<News> {
     const news = await this.findById(id);
     news.views += 1;
     return await this.newsRepository.save(news);
   }
 
-  async toggleFeatured(id: string): Promise<News> {
+  async toggleFeatured(id: number): Promise<News> {
     const news = await this.findById(id);
     news.isFeatured = !news.isFeatured;
     return await this.newsRepository.save(news);
   }
 
-  async toggleActive(id: string): Promise<News> {
+  async toggleActive(id: number): Promise<News> {
     const news = await this.findById(id);
     news.isActive = !news.isActive;
     return await this.newsRepository.save(news);

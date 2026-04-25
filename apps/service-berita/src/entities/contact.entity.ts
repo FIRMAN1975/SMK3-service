@@ -16,8 +16,8 @@ export enum ContactType {
 
 @Entity('contacts')
 export class Contact {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ type: 'varchar', length: 50 })
   label: string;
