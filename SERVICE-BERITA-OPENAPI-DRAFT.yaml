@@ -1,0 +1,423 @@
+openapi: 3.0.3
+info:
+  title: Service Berita API Draft
+  version: 1.0.0-draft
+  description: |
+    Draft OpenAPI untuk service-berita dengan envelope respons yang konsisten.
+    Fokus awal: endpoint berita. Skema ini dipakai sebagai referensi untuk
+    menyamakan bentuk keluaran antar service.
+servers:
+  - url: http://localhost:3003
+    description: Local service-berita
+tags:
+  - name: Berita
+    description: CRUD berita
+
+paths:
+  /api/berita:
+    get:
+      tags: [Berita]
+      summary: Daftar berita aktif
+      description: Mengembalikan data berita aktif dengan pagination.
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Nomor halaman.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+          description: Jumlah item per halaman.
+      responses:
+        '200':
+          description: Daftar berita berhasil diambil.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsListResponse'
+              examples:
+                success:
+                  value:
+                    data:
+                      - id: 1
+                        title: Pengumuman Libur Semester
+                        content: Sekolah akan libur mulai tanggal 1 Juni 2026.
+                        description: Informasi libur semester genap.
+                        excerpt: Sekolah akan libur mulai tanggal 1 Juni 2026...
+                        slug: pengumuman-libur-semester
+                        imageUrl: https://example.com/uploads/news-1.jpg
+                        author: Admin
+                        views: 120
+                        isFeatured: true
+                        isActive: true
+                        category:
+                          id: 2
+                          name: Informasi Sekolah
+                        createdAt: 2026-05-14T08:00:00.000Z
+                        updatedAt: 2026-05-14T08:30:00.000Z
+                    meta:
+                      total: 42
+                      page: 1
+                      limit: 10
+        '400':
+          description: Parameter tidak valid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags: [Berita]
+      summary: Buat berita baru
+      description: Membuat berita baru dan mengembalikan data berita yang sudah tersimpan.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsCreateRequest'
+            examples:
+              createNews:
+                value:
+                  title: Pengumuman Libur Semester
+                  content: Sekolah akan libur mulai tanggal 1 Juni 2026.
+                  description: Informasi libur semester genap.
+                  excerpt: Sekolah akan libur mulai tanggal 1 Juni 2026...
+                  imageUrl: https://example.com/uploads/news-1.jpg
+                  author: Admin
+                  categoryId: 2
+                  isFeatured: true
+      responses:
+        '201':
+          description: Berita berhasil dibuat.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsSingleResponse'
+        '400':
+          description: Data input tidak valid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Tidak terautentikasi.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Tidak memiliki hak akses.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/berita/{id}:
+    get:
+      tags: [Berita]
+      summary: Detail berita
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Detail berita berhasil diambil.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsSingleResponse'
+        '404':
+          description: Berita tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags: [Berita]
+      summary: Ubah berita
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsUpdateRequest'
+      responses:
+        '200':
+          description: Berita berhasil diperbarui.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsSingleResponse'
+        '400':
+          description: Data input tidak valid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Tidak terautentikasi.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Tidak memiliki hak akses.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Berita tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags: [Berita]
+      summary: Hapus berita
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '204':
+          description: Berita dihapus.
+        '401':
+          description: Tidak terautentikasi.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Tidak memiliki hak akses.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Berita tidak ditemukan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    PaginationMeta:
+      type: object
+      required: [total, page, limit]
+      properties:
+        total:
+          type: integer
+          example: 42
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 10
+
+    CategoryRef:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+          example: 2
+        name:
+          type: string
+          example: Informasi Sekolah
+
+    NewsResponse:
+      type: object
+      required:
+        - id
+        - title
+        - content
+        - slug
+        - views
+        - isFeatured
+        - isActive
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Pengumuman Libur Semester
+        content:
+          type: string
+          example: Sekolah akan libur mulai tanggal 1 Juni 2026.
+        description:
+          type: string
+          nullable: true
+          example: Informasi libur semester genap.
+        excerpt:
+          type: string
+          nullable: true
+          example: Sekolah akan libur mulai tanggal 1 Juni 2026...
+        slug:
+          type: string
+          example: pengumuman-libur-semester
+        imageUrl:
+          type: string
+          nullable: true
+          example: https://example.com/uploads/news-1.jpg
+        author:
+          type: string
+          nullable: true
+          example: Admin
+        views:
+          type: integer
+          example: 120
+        isFeatured:
+          type: boolean
+          example: true
+        isActive:
+          type: boolean
+          example: true
+        category:
+          allOf:
+            - $ref: '#/components/schemas/CategoryRef'
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+          example: 2026-05-14T08:00:00.000Z
+        updatedAt:
+          type: string
+          format: date-time
+          example: 2026-05-14T08:30:00.000Z
+
+    NewsCreateRequest:
+      type: object
+      required: [title, content]
+      properties:
+        title:
+          type: string
+          minLength: 5
+          maxLength: 255
+        content:
+          type: string
+          minLength: 10
+        description:
+          type: string
+          maxLength: 500
+        excerpt:
+          type: string
+          maxLength: 500
+        imageUrl:
+          type: string
+          format: uri
+        author:
+          type: string
+          maxLength: 100
+        categoryId:
+          type: integer
+          minimum: 1
+        isFeatured:
+          type: boolean
+
+    NewsUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 5
+          maxLength: 255
+        content:
+          type: string
+          minLength: 10
+        description:
+          type: string
+          maxLength: 500
+        excerpt:
+          type: string
+          maxLength: 500
+        imageUrl:
+          type: string
+          format: uri
+        author:
+          type: string
+          maxLength: 100
+        categoryId:
+          type: integer
+          minimum: 1
+        isFeatured:
+          type: boolean
+        isActive:
+          type: boolean
+
+    NewsListResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewsResponse'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    NewsSingleResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/NewsResponse'
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [message]
+          properties:
+            code:
+              type: string
+              example: NOT_FOUND
+            message:
+              type: string
+              example: News 1 tidak ditemukan
+            details:
+              nullable: true
+              oneOf:
+                - type: string
+                - type: object
+                - type: array

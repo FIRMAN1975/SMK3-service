@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import StrukturOrganisasiModel from '../../models/StrukturOrganisasiModel';
 
 @Injectable()
@@ -15,6 +15,11 @@ export class StrukturOrganisasiService {
   }
 
   async create(gambar: string) {
+    const count = await StrukturOrganisasiModel.count();
+    if (count > 0) {
+      throw new BadRequestException('Struktur organisasi hanya boleh memiliki satu gambar utama');
+    }
+
     return await StrukturOrganisasiModel.create({ gambar } as any);
   }
 

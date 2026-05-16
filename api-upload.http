@@ -1,0 +1,29 @@
+### ============================================
+### MULTIPART FORM DATA - FILE UPLOAD TESTING
+### ============================================
+### Digunakan untuk endpoint yang perlu file upload
+### Copy & paste ke api.http sesuai kebutuhan
+
+### ✅ UPLOAD FASILITAS DENGAN FOTO
+POST http://localhost:8000/api/profile/fasilitas
+Authorization: Bearer {{token}}
+
+[Form Data]
+nama: Lab Komputer Baru
+deskripsi: Laboratorium komputer dengan 30 unit komputer
+foto: @./test-data/sample-image.jpg
+
+### ✅ UPDATE FASILITAS DENGAN FOTO BARU
+PUT http://localhost:8000/api/profile/fasilitas/1
+Authorization: Bearer {{token}}
+
+[Form Data]
+nama: Lab Komputer Updated
+deskripsi: Laboratorium komputer dengan 40 unit komputer
+foto: @./test-data/sample-image-2.jpg
+
+### CATATAN:
+### - Ganti ./test-data/sample-image.jpg dengan path file lokal Anda
+### - Format file yang diterima: jpg, jpeg, png, webp
+### - Size maksimal: sesuai konfigurasi server
+### - File akan disimpan di folder /uploads

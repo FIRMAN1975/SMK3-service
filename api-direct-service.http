@@ -1,0 +1,196 @@
+### ============================================
+### DIRECT SERVICE TESTING (Bypass Gateway)
+### ============================================
+### File ini untuk testing langsung ke services tanpa melalui API Gateway
+### Gunakan ini jika API Gateway belum siap atau untuk debugging
+###
+### ⚠️ PENTING: Services punya GatewayGuard yang memerlukan:
+### - Header: X-Gateway-Secret = {{gatewaySecret}}
+### - Header: X-User-Id = <user_id>
+### - Header: X-User-Name = <username>
+### - Header: X-User-Roles = <roles>
+
+### VARIABLES
+@beritaUrl = http://localhost:3003/api
+@profileUrl = http://localhost:3002/api
+@portofolioUrl = http://localhost:3004/api
+@pelangggaranUrl = http://localhost:3001/api
+@contentType = application/json
+
+### Gateway Secret (dari .env: INTERNAL_GATEWAY_SECRET)
+@gatewaySecret = change_me_gateway_internal_secret
+
+### Mock User Headers (untuk bypass guard)
+@adminUserId = 550e8400-e29b-41d4-a716-446655440000
+@adminUsername = admin
+@adminRoles = ADMIN
+
+@siswaUserId = 550e8400-e29b-41d4-a716-446655440001
+@siswaUsername = siswa1
+@siswaRoles = SISWA
+
+@guruUserId = 550e8400-e29b-41d4-a716-446655440002
+@guruUsername = guru1
+@guruRoles = GURU
+
+---
+
+### ============================================
+### SERVICE BERITA - DIRECT ACCESS
+### ============================================
+
+### ✅ LIST BERITA (Direct ke Service)
+GET {{beritaUrl}}/berita
+X-Gateway-Secret: {{gatewaySecret}}
+X-User-Id: {{adminUserId}}
+X-User-Name: {{adminUsername}}
+X-User-Roles: {{adminRoles}}
+Content-Type: {{contentType}}
+
+### 🔒 CREATE BERITA (Direct)
+POST {{beritaUrl}}/berita
+X-Gateway-Secret: {{gatewaySecret}}
+X-User-Id: {{adminUserId}}
+X-User-Name: {{adminUsername}}
+X-User-Roles: {{adminRoles}}
+Content-Type: {{contentType}}
+
+{
+  "title": "Berita Test Direct",
+  "content": "Isi berita test direct service",
+  "category_id": 1,
+  "slug": "berita-test-direct"
+}
+
+---
+
+### ============================================
+### SERVICE PROFILE - DIRECT ACCESS
+### ============================================
+
+### ✅ LIST FASILITAS (Direct ke Service)
+GET {{profileUrl}}/fasilitas
+X-Gateway-Secret: {{gatewaySecret}}
+X-User-Id: {{adminUserId}}
+X-User-Name: {{adminUsername}}
+X-User-Roles: {{adminRoles}}
+Content-Type: {{contentType}}
+
+### 🔒 CREATE FASILITAS (Direct)
+POST {{profileUrl}}/fasilitas
+X-Gateway-Secret: {{gatewaySecret}}
+X-User-Id: {{adminUserId}}
+X-User-Name: {{adminUsername}}
+X-User-Roles: {{adminRoles}}
+Content-Type: {{contentType}}
+
+{
+  "nama": "Lab Komputer Direct",
+  "deskripsi": "Laboratorium komputer via direct service",
+  "foto": "uploads/fasilitas-123.jpg"
+}
+
+---
+
+### ============================================
+### SERVICE PORTOFOLIO - DIRECT ACCESS
+### ============================================
+
+### ✅ LIST PORTOFOLIO (Direct ke Service)
+GET {{portofolioUrl}}/portofolio
+X-Gateway-Secret: {{gatewaySecret}}
+X-User-Id: {{siswaUserId}}
+X-User-Name: {{siswaUsername}}
+X-User-Roles: {{siswaRoles}}
+Content-Type: {{contentType}}
+
+### 🔒 CREATE PORTOFOLIO (Direct) - SISWA
+POST {{portofolioUrl}}/portofolio
+X-Gateway-Secret: {{gatewaySecret}}
+X-User-Id: {{siswaUserId}}
+X-User-Name: {{siswaUsername}}
+X-User-Roles: {{siswaRoles}}
+Content-Type: {{contentType}}
+
+{
+  "title": "Portfolio Direct Test",
+  "description": "Portfolio created via direct service test",
+  "technologies": ["React", "Node.js"],
+  "link": "https://github.com/test/portfolio"
+}
+
+---
+
+### ============================================
+### SERVICE PELANGGARAN - DIRECT ACCESS
+### ============================================
+
+### 👤 GET MASTER DATA SISWA (Direct)
+GET {{pelangggaranUrl}}/surat-panggilan/master/siswa
+X-Gateway-Secret: {{gatewaySecret}}
+X-User-Id: {{adminUserId}}
+X-User-Name: {{adminUsername}}
+X-User-Roles: {{adminRoles}}
+Content-Type: {{contentType}}
+
+### 👤 CREATE SURAT PANGGILAN (Direct) - ADMIN
+POST {{pelangggaranUrl}}/surat-panggilan
+X-Gateway-Secret: {{gatewaySecret}}
+X-User-Id: {{adminUserId}}
+X-User-Name: {{adminUsername}}
+X-User-Roles: {{adminRoles}}
+Content-Type: {{contentType}}
+
+{
+  "siswa_id": 1,
+  "guru_id": 1,
+  "pelanggaran": "Terlambat",
+  "deskripsi": "Terlambat masuk sekolah 3 hari",
+  "tindakan": "Peringatan lisan"
+}
+
+---
+
+### ============================================
+### TESTING TIPS
+### ============================================
+
+### Tip 1: Ubah @adminRoles untuk test berbagai role
+### @adminRoles = ADMIN  → Akses endpoint ADMIN
+### @siswaRoles = SISWA  → Akses endpoint SISWA
+### @guruRoles = GURU    → Akses endpoint GURU
+
+### Tip 2: Jika masih 403, cek:
+### - @gatewaySecret harus sama dengan INTERNAL_GATEWAY_SECRET di .env
+### - X-User-Id harus ada (tidak bisa kosong)
+### - X-User-Name harus ada (tidak bisa kosong)
+### - X-User-Roles harus ada (tidak bisa kosong)
+
+### Tip 3: PUBLIC endpoints tidak perlu header ini
+### Tapi service-berita semua endpoint punya @UseGuards(GatewayGuard)
+### Jadi HARUS punya header di atas
+
+### Tip 4: Untuk testing PUBLIC endpoint, masih tetap perlu:
+### - X-Gateway-Secret
+### - X-User-Id, X-User-Name, X-User-Roles
+### (Karena guard mengecek ini sebelum check @Public decorator)
+
+---
+
+### ============================================
+### REKOMENDASI
+### ============================================
+
+### ⭐ BEST PRACTICE:
+### Gunakan API Gateway (api.http) untuk semua testing
+### Alasan:
+### 1. Lebih dekat dengan production setup
+### 2. Lebih aman (semua request validated)
+### 3. Token-based authentication lebih standar
+### 4. Tidak perlu mock user headers
+
+### ⚠️ Gunakan file ini HANYA untuk:
+### 1. Debugging individual service
+### 2. Testing ketika API Gateway down
+### 3. Development environment saja
+

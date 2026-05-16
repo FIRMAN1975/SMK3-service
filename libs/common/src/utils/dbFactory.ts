@@ -31,3 +31,46 @@ export const createDatabaseConnection = (
     }
   });
 };
+
+export const createDatabaseConnectionFromUrl = (
+  databaseUrl: string | undefined,
+  fallback: {
+    dbName: string;
+    dbUser: string;
+    dbPass: string;
+    dbHost: string;
+    dbPort: number;
+  },
+): Sequelize => {
+  const baseOptions = {
+    dialect: 'postgres' as const,
+    logging: false,
+    timezone: '+07:00',
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
+    define: {
+      timestamps: true,
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+    },
+  };
+
+  if (databaseUrl) {
+    return new Sequelize(databaseUrl, baseOptions);
+  }
+
+  return new Sequelize(
+    fallback.dbName,
+    fallback.dbUser,
+    fallback.dbPass,
+    {
+      ...baseOptions,
+      host: fallback.dbHost,
+      port: fallback.dbPort,
+    },
+  );
+};

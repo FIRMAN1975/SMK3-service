@@ -5,7 +5,9 @@ import {
   IsNumber,
   Length,
   MaxLength,
+  IsUrl,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateNewsDto {
   @IsString()
@@ -27,7 +29,7 @@ export class CreateNewsDto {
   excerpt?: string;
 
   @IsOptional()
-  @IsString()
+  @IsUrl()
   imageUrl?: string;
 
   @IsOptional()
@@ -36,6 +38,7 @@ export class CreateNewsDto {
   author?: string;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   categoryId?: number;
 
@@ -66,7 +69,7 @@ export class UpdateNewsDto {
   excerpt?: string;
 
   @IsOptional()
-  @IsString()
+  @IsUrl()
   imageUrl?: string;
 
   @IsOptional()
@@ -75,6 +78,7 @@ export class UpdateNewsDto {
   author?: string;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   categoryId?: number;
 
@@ -98,7 +102,10 @@ export class NewsResponseDto {
   views: number;
   isFeatured: boolean;
   isActive: boolean;
-  category?: any;
+  category?: {
+    id: number;
+    name: string;
+  };
   createdAt: Date;
   updatedAt: Date;
 }

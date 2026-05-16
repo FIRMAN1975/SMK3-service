@@ -3,119 +3,114 @@ import {
   IsOptional,
   IsDate,
   IsEnum,
-  IsNotEmpty,
   MaxLength,
   Matches,
+  IsBoolean,
 } from 'class-validator';
-import { Type, Transform } from 'class-transformer';
-import { ScheduleCategory } from '../entities/schedule.entity';
+import { Type } from 'class-transformer';
+import { ScheduleCategory } from '../entities';
 
 export class CreateScheduleDto {
   @IsString()
-  @IsNotEmpty({ message: 'Judul agenda wajib diisi' })
   @MaxLength(255)
   title: string;
 
-  @IsString()
   @IsOptional()
-  description: string;
+  @IsString()
+  description?: string;
 
-  @IsNotEmpty({ message: 'Tanggal wajib diisi' })
   @Type(() => Date)
-  @IsDate({ message: 'Format tanggal tidak valid' })
+  @IsDate()
   date: Date;
 
   @IsOptional()
-  @Matches(/^([0-1]{1}[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}$/, {
+  @Matches(/^([0-1]\d|2[0-3]):[0-5]\d$/, {
     message: 'Format waktu harus HH:mm',
   })
-  startTime: string;
+  startTime?: string;
 
   @IsOptional()
-  @Matches(/^([0-1]{1}[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}$/, {
+  @Matches(/^([0-1]\d|2[0-3]):[0-5]\d$/, {
     message: 'Format waktu harus HH:mm',
   })
-  endTime: string;
+  endTime?: string;
 
+  @IsOptional()
   @IsString()
-  @IsOptional()
   @MaxLength(255)
-  location: string;
+  location?: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   @MaxLength(500)
-  participants: string;
+  participants?: string;
 
+  @IsOptional()
   @IsEnum(ScheduleCategory)
-  @IsOptional()
-  category: ScheduleCategory = ScheduleCategory.KEGIATAN;
+  category?: ScheduleCategory;
 
-  @IsString()
   @IsOptional()
-  imageUrl: string = '';
+  @IsString()
+  imageUrl?: string;
 }
 
 export class UpdateScheduleDto {
-  @IsString()
   @IsOptional()
+  @IsString()
   @MaxLength(255)
-  title: string;
+  title?: string;
 
-  @IsString()
   @IsOptional()
-  description: string;
+  @IsString()
+  description?: string;
 
   @IsOptional()
   @Type(() => Date)
-  @IsDate({ message: 'Format tanggal tidak valid' })
-  date: Date;
+  @IsDate()
+  date?: Date;
 
   @IsOptional()
-  @Matches(/^([0-1]{1}[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}$/, {
-    message: 'Format waktu harus HH:mm',
-  })
-  startTime: string;
+  @Matches(/^([0-1]\d|2[0-3]):[0-5]\d$/)
+  startTime?: string;
 
   @IsOptional()
-  @Matches(/^([0-1]{1}[0-9]{1}|2[0-3]{1}):[0-5]{1}[0-9]{1}$/, {
-    message: 'Format waktu harus HH:mm',
-  })
-  endTime: string;
+  @Matches(/^([0-1]\d|2[0-3]):[0-5]\d$/)
+  endTime?: string;
 
+  @IsOptional()
   @IsString()
-  @IsOptional()
   @MaxLength(255)
-  location: string;
+  location?: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   @MaxLength(500)
-  participants: string;
+  participants?: string;
 
+  @IsOptional()
   @IsEnum(ScheduleCategory)
-  @IsOptional()
-  category: ScheduleCategory;
+  category?: ScheduleCategory;
 
+  @IsOptional()
   @IsString()
-  @IsOptional()
-  imageUrl: string;
+  imageUrl?: string;
 
   @IsOptional()
-  isActive: boolean;
+  @IsBoolean()
+  isActive?: boolean;
 }
 
 export class ScheduleResponseDto {
   id: number;
   title: string;
-  description: string;
+  description?: string;
   date: Date;
-  startTime: string;
-  endTime: string;
-  location: string;
-  participants: string;
+  startTime?: string;
+  endTime?: string;
+  location?: string;
+  participants?: string;
   category: ScheduleCategory;
-  imageUrl: string;
+  imageUrl?: string;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;

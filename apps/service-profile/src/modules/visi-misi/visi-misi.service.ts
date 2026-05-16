@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import VisiMisiModel from '../../models/VisiMisiModel';
 import { CreateVisiMisiDto, UpdateVisiMisiDto } from './visi-misi.dto';
 
@@ -15,6 +15,13 @@ export class VisiMisiService {
   }
 
   async create(dto: CreateVisiMisiDto) {
+    if (dto.tipe === 'visi') {
+      const existingVisi = await VisiMisiModel.count({ where: { tipe: 'visi' } });
+      if (existingVisi > 0) {
+        throw new BadRequestException('Visi hanya boleh memiliki satu data utama');
+      }
+    }
+
     return await VisiMisiModel.create({ ...dto } as any);
   }
 

@@ -1,0 +1,230 @@
+### ============================================
+### AUTHENTICATION & LOGIN FLOW
+### ============================================
+### File khusus untuk mendapatkan JWT Token dari Keycloak
+### Gunakan ini terlebih dahulu sebelum test endpoint lainnya
+
+### VARIABLES
+@keycloakUrl = http://localhost:8080/realms/smk3/protocol/openid-connect
+@adminUsername = admin
+@adminPassword = admin123
+@siswaUsername = siswa1
+@siswaPassword = siswa123
+@guruUsername = guru1
+@guruPassword = guru123
+@clientId = api-gateway
+@clientSecret = your-client-secret-here
+
+---
+
+### ============================================
+### 1. LOGIN ADMIN
+### ============================================
+
+### 🔐 GET TOKEN - ADMIN
+POST {{keycloakUrl}}/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id={{clientId}}&grant_type=password&username={{adminUsername}}&password={{adminPassword}}&client_secret={{clientSecret}}
+
+### Response akan berisi:
+### {
+###   "access_token": "eyJhbGc...",
+###   "refresh_token": "eyJhbGc...",
+###   "token_type": "Bearer",
+###   "expires_in": 300
+### }
+
+### COPY access_token dan paste ke @token di api.http
+
+---
+
+### ============================================
+### 2. LOGIN SISWA
+### ============================================
+
+### 🔐 GET TOKEN - SISWA
+POST {{keycloakUrl}}/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id={{clientId}}&grant_type=password&username={{siswaUsername}}&password={{siswaPassword}}&client_secret={{clientSecret}}
+
+---
+
+### ============================================
+### 3. LOGIN GURU
+### ============================================
+
+### 🔐 GET TOKEN - GURU
+POST {{keycloakUrl}}/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id={{clientId}}&grant_type=password&username={{guruUsername}}&password={{guruPassword}}&client_secret={{clientSecret}}
+
+---
+
+### ============================================
+### 4. REFRESH TOKEN
+### ============================================
+
+### 🔄 REFRESH TOKEN (Jika token expired)
+POST {{keycloakUrl}}/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id={{clientId}}&grant_type=refresh_token&refresh_token=<PASTE_REFRESH_TOKEN>&client_secret={{clientSecret}}
+
+---
+
+### ============================================
+### 5. VALIDATE TOKEN
+### ============================================
+
+### ✅ INTROSPECT TOKEN (Check if valid)
+POST {{keycloakUrl}}/introspect
+Content-Type: application/x-www-form-urlencoded
+
+client_id={{clientId}}&token=<PASTE_ACCESS_TOKEN>&client_secret={{clientSecret}}
+
+### Response:
+### {
+###   "exp": 1716384261,
+###   "iat": 1716383961,
+###   "auth_time": 1716383961,
+###   "jti": "abc123...",
+###   "iss": "http://localhost:8080/realms/smk3",
+###   "sub": "user-uuid",
+###   "typ": "Bearer",
+###   "azp": "api-gateway",
+###   "session_state": "xxx",
+###   "acr": "1",
+###   "email": "admin@smk3.sch.id",
+###   "name": "Administrator",
+###   "preferred_username": "admin",
+###   "given_name": "Admin",
+###   "family_name": "Istrator",
+###   "email_verified": true,
+###   "active": true
+### }
+
+---
+
+### ============================================
+### 6. LOGOUT / REVOKE TOKEN
+### ============================================
+
+### 🚪 LOGOUT - REVOKE TOKEN
+POST {{keycloakUrl}}/logout
+Content-Type: application/x-www-form-urlencoded
+
+client_id={{clientId}}&refresh_token=<PASTE_REFRESH_TOKEN>&client_secret={{clientSecret}}
+
+---
+
+### ============================================
+### STEP-BY-STEP GUIDE
+### ============================================
+
+### 1. Klik "Send Request" pada "GET TOKEN - ADMIN"
+
+### 2. Copy access_token dari response JSON
+###    Contoh: "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCIg..."
+
+### 3. Buka file api.http
+
+### 4. Ubah variabel @token:
+###    @token = eyJhbGciOiJSUzI1NiIsInR5cCIg...
+
+### 5. Sekarang Anda bisa test endpoint yang perlu autentikasi
+
+### 6. Jika token expired (response 401):
+###    - Klik "Send Request" pada "GET TOKEN - ADMIN" lagi
+###    - Update @token dengan token baru
+
+---
+
+### ============================================
+### TIPS KEAMANAN
+### ============================================
+
+### ⚠️ JANGAN:
+### - Jangan push file .http dengan token real ke git
+### - Jangan share token ke orang lain
+### - Jangan commit file ini jika ada secret
+
+### ✅ LAKUKAN:
+### - Setup @clientSecret dari environment variable
+### - Gunakan .env file untuk credentials
+### - Refresh token sebelum expired
+### - Logout setelah selesai testing
+
+---
+
+### ============================================
+### DECODE JWT TOKEN
+### ============================================
+
+### Gunakan https://jwt.io untuk decode token
+### Paste access_token yang Anda dapat
+### Akan melihat:
+### {
+###   "exp": 1716384261,
+###   "iat": 1716383961,
+###   "sub": "uuid-user",
+###   "preferred_username": "admin",
+###   "email": "admin@smk3.sch.id",
+###   "roles": ["ADMIN"],
+###   ...
+### }
+
+### Bagian "sub" adalah user_id
+### Bagian "roles" adalah role user
+
+---
+
+### ============================================
+### KEYCLOAK CONFIG
+### ============================================
+
+### Keycloak URL: http://localhost:8080
+### Admin Console: http://localhost:8080/admin
+### Realm: smk3
+### Client ID: api-gateway
+
+### Default Users (setup di docker-compose):
+### - admin / Admin@SMK3
+### - Atau sesuai yang Anda buat
+
+---
+
+### ============================================
+### TROUBLESHOOTING
+### ============================================
+
+### ERROR: "invalid_client_id"
+### SOLUSI: Pastikan client_id = api-gateway
+
+### ERROR: "invalid_grant"
+### SOLUSI: Username/password salah
+
+### ERROR: "Client authentication failed"
+### SOLUSI: client_secret tidak cocok
+
+### ERROR: "Realm does not exist"
+### SOLUSI: Realm name harus "smk3"
+
+### ERROR: "Connection refused on localhost:8080"
+### SOLUSI: Keycloak belum berjalan
+### - Jalankan: docker-compose up keycloak
+
+---
+
+### ============================================
+### NEXT STEPS
+### ============================================
+
+### 1. ✅ Login dan dapatkan token
+### 2. ✅ Copy token ke @token di api.http
+### 3. ✅ Test endpoint di api.http
+### 4. ✅ Refresh token saat expired
+### 5. ✅ Logout setelah selesai
+

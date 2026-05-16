@@ -1,0 +1,577 @@
+{
+  "info": {
+    "_postman_id": "berita-service-api",
+    "name": "Sekolah Berita & Informasi API",
+    "description": "API untuk mengelola berita, pengumuman, kategori, dan agenda sekolah",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health & Docs",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/api/health",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "health"]
+            },
+            "description": "Check if service is running"
+          }
+        },
+        {
+          "name": "API Documentation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/api/docs",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "docs"]
+            },
+            "description": "Get available endpoints documentation"
+          }
+        },
+        {
+          "name": "Hello",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/api",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Berita (News)",
+      "item": [
+        {
+          "name": "Get All News",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/api/berita?page=1&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "berita"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get paginated list of all news (PUBLIC)"
+          }
+        },
+        {
+          "name": "Get News by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/api/berita/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "berita", "1"]
+            },
+            "description": "Get specific news by ID (PUBLIC)"
+          }
+        },
+        {
+          "name": "Create News",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_ADMIN_TOKEN",
+                "description": "Admin JWT Token required"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Judul Berita Terbaru\",\n  \"content\": \"Ini adalah konten berita yang lengkap dan informatif tentang acara sekolah terbaru kami.\",\n  \"description\": \"Deskripsi singkat berita\",\n  \"excerpt\": \"Kutipan singkat untuk preview\",\n  \"imageUrl\": \"http://localhost:3003/uploads/berita-1.jpg\",\n  \"categoryId\": 1,\n  \"isFeatured\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3003/api/berita",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "berita"]
+            },
+            "description": "Create new news (ADMIN only)"
+          }
+        },
+        {
+          "name": "Update News",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_ADMIN_OR_GURU_TOKEN",
+                "description": "Admin or Guru JWT Token required"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Judul Berita Update\",\n  \"content\": \"Konten berita yang telah diperbarui.\",\n  \"description\": \"Deskripsi update\",\n  \"isFeatured\": false\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3003/api/berita/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "berita", "1"]
+            },
+            "description": "Update news (ADMIN & GURU)"
+          }
+        },
+        {
+          "name": "Delete News",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer YOUR_ADMIN_TOKEN",
+                "description": "Admin JWT Token required"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3003/api/berita/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "berita", "1"]
+            },
+            "description": "Delete news (ADMIN only)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Kategori (Categories)",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/api/categories",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "categories"]
+            },
+            "description": "Get all news categories (PUBLIC)"
+          }
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/api/categories/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "categories", "1"]
+            },
+            "description": "Get specific category (PUBLIC)"
+          }
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Akademik\",\n  \"description\": \"Berita seputar kegiatan akademik\",\n  \"color\": \"#FF6B6B\",\n  \"order\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3003/api/categories",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "categories"]
+            },
+            "description": "Create new category"
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Akademik Update\",\n  \"color\": \"#4ECDC4\",\n  \"order\": 2\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3003/api/categories/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "categories", "1"]
+            },
+            "description": "Update category"
+          }
+        },
+        {
+          "name": "Toggle Category Active",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/api/categories/1/toggle-active",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "categories", "1", "toggle-active"]
+            },
+            "description": "Toggle category active status"
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/api/categories/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "categories", "1"]
+            },
+            "description": "Delete category"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pengumuman (Announcements)",
+      "item": [
+        {
+          "name": "Get All Announcements",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/api/pengumuman?page=1&limit=100",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "pengumuman"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            },
+            "description": "Get all announcements (PUBLIC, paginated)"
+          }
+        },
+        {
+          "name": "Get Announcement by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/api/pengumuman/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "pengumuman", "1"]
+            },
+            "description": "Get specific announcement (PUBLIC)"
+          }
+        },
+        {
+          "name": "Create Announcement",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Pengumuman Penting\",\n  \"content\": \"Ini adalah pengumuman penting untuk semua siswa dan orang tua.\",\n  \"description\": \"Deskripsi pengumuman\",\n  \"imageUrl\": \"http://localhost:3003/uploads/pengumuman-1.jpg\",\n  \"type\": \"penting\",\n  \"author\": \"Admin\",\n  \"expiredAt\": \"2026-12-31T23:59:59Z\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3003/api/pengumuman",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "pengumuman"]
+            },
+            "description": "Create new announcement. Type options: 'biasa', 'penting', 'sangat_penting', 'mendesak'"
+          }
+        },
+        {
+          "name": "Update Announcement",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Pengumuman Update\",\n  \"type\": \"sangat_penting\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3003/api/pengumuman/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "pengumuman", "1"]
+            },
+            "description": "Update announcement"
+          }
+        },
+        {
+          "name": "Toggle Announcement Active",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/api/pengumuman/1/toggle-active",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "pengumuman", "1", "toggle-active"]
+            },
+            "description": "Toggle announcement active status"
+          }
+        },
+        {
+          "name": "Delete Announcement",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/api/pengumuman/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "pengumuman", "1"]
+            },
+            "description": "Delete announcement"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Agenda (Schedule)",
+      "item": [
+        {
+          "name": "Get All Agendas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/api/agenda?page=1&limit=100&category=akademik",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "agenda"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "100"
+                },
+                {
+                  "key": "category",
+                  "value": "akademik",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get all agendas (PUBLIC, paginated). Category options: 'akademik', 'ekstrakurikuler', 'outing', 'libur', 'ujian', 'kegiatan', 'lainnya'"
+          }
+        },
+        {
+          "name": "Get Agenda by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/api/agenda/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "agenda", "1"]
+            },
+            "description": "Get specific agenda (PUBLIC)"
+          }
+        },
+        {
+          "name": "Create Agenda",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Ulangan Tengah Semester (UTS)\",\n  \"description\": \"Persiapan dan pelaksanaan UTS untuk semua kelas\",\n  \"date\": \"2026-05-15\",\n  \"startTime\": \"07:00\",\n  \"endTime\": \"12:00\",\n  \"location\": \"Ruang Kelas\",\n  \"participants\": \"Semua Siswa\",\n  \"category\": \"ujian\",\n  \"imageUrl\": \"http://localhost:3003/uploads/agenda-1.jpg\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3003/api/agenda",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "agenda"]
+            },
+            "description": "Create new agenda. Category options: 'akademik', 'ekstrakurikuler', 'outing', 'libur', 'ujian', 'kegiatan', 'lainnya'"
+          }
+        },
+        {
+          "name": "Update Agenda",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Ulangan Tengah Semester (UTS) - Update\",\n  \"startTime\": \"08:00\",\n  \"endTime\": \"13:00\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3003/api/agenda/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "agenda", "1"]
+            },
+            "description": "Update agenda"
+          }
+        },
+        {
+          "name": "Toggle Agenda Active",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/api/agenda/1/toggle-active",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "agenda", "1", "toggle-active"]
+            },
+            "description": "Toggle agenda active status"
+          }
+        },
+        {
+          "name": "Delete Agenda",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/api/agenda/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "agenda", "1"]
+            },
+            "description": "Delete agenda"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Search",
+      "item": [
+        {
+          "name": "Search All",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3003/api/search?q=teknologi&limit=20",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3003",
+              "path": ["api", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "teknologi"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Search across all content (berita & pengumuman) - PUBLIC"
+          }
+        }
+      ]
+    }
+  ]
+}

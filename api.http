@@ -1,0 +1,723 @@
+### ============================================
+### API TESTING - REST CLIENT (.http)
+### ============================================
+### Buka file ini di VS Code dengan Extension "REST Client"
+### Kemudian klik "Send Request" di atas setiap request
+###
+### Pastikan:
+### 1. API Gateway berjalan di http://localhost:8000
+### 2. Ganti {{token}} dengan JWT token yang valid
+### 3. Ganti {{id}} dengan ID yang ada di database
+### ============================================
+
+### VARIABLES
+@baseUrl = http://localhost:8000/api
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...  # TODO: Ganti dengan token valid
+@contentType = application/json
+
+### GATEWAY SECRET (untuk direct service testing, jika tidak via gateway)
+### Set di .env: INTERNAL_GATEWAY_SECRET=change_me_gateway_internal_secret
+@gatewaySecret = change_me_gateway_internal_secret
+
+### PENTING:
+### ⚠️ Semua service-berita WAJIB diakses via API Gateway (port 8000)
+### ⚠️ Pastikan API Gateway berjalan: npm run start -w apps/api-gateway
+### ⚠️ Jika ada error 403 "Request harus melalui API Gateway":
+###    - Pastikan @baseUrl = http://localhost:8000/api
+###    - Pastikan API Gateway sudah running
+###    - Check INTERNAL_GATEWAY_SECRET di .env
+
+### ============================================
+### 1. SERVICE BERITA - BERITA
+### ============================================
+
+### ✅ LIST BERITA (PUBLIC)
+GET {{baseUrl}}/berita
+Content-Type: {{contentType}}
+
+### ✅ LIST BERITA DENGAN PAGINATION
+GET {{baseUrl}}/berita?page=1&limit=10
+Content-Type: {{contentType}}
+
+### ✅ DETAIL BERITA (PUBLIC)
+GET {{baseUrl}}/berita/1
+Content-Type: {{contentType}}
+
+### 🔒 CREATE BERITA (ADMIN)
+POST {{baseUrl}}/berita
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "title": "Berita Test",
+  "content": "Isi berita test",
+  "category_id": 1,
+  "slug": "berita-test"
+}
+
+### 🔒 EDIT BERITA (ADMIN, GURU)
+PUT {{baseUrl}}/berita/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "title": "Berita Updated",
+  "content": "Isi berita yang sudah diupdate",
+  "category_id": 1
+}
+
+### 🔒 HAPUS BERITA (ADMIN)
+DELETE {{baseUrl}}/berita/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+---
+
+### ============================================
+### 2. SERVICE BERITA - KATEGORI
+### ============================================
+
+### ✅ LIST KATEGORI (PUBLIC)
+GET {{baseUrl}}/categories
+Content-Type: {{contentType}}
+
+### ✅ DETAIL KATEGORI (PUBLIC)
+GET {{baseUrl}}/categories/1
+Content-Type: {{contentType}}
+
+### 🔒 CREATE KATEGORI (ADMIN)
+POST {{baseUrl}}/categories
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Kategori Baru",
+  "description": "Deskripsi kategori",
+  "slug": "kategori-baru"
+}
+
+### 🔒 EDIT KATEGORI (ADMIN)
+PUT {{baseUrl}}/categories/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Kategori Updated",
+  "description": "Deskripsi updated",
+  "slug": "kategori-updated"
+}
+
+### 🔒 HAPUS KATEGORI (ADMIN)
+DELETE {{baseUrl}}/categories/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### 🔒 TOGGLE AKTIF/NONAKTIF (ADMIN)
+PUT {{baseUrl}}/categories/1/toggle-active
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+---
+
+### ============================================
+### 3. SERVICE BERITA - PENGUMUMAN
+### ============================================
+
+### ✅ LIST PENGUMUMAN (PUBLIC)
+GET {{baseUrl}}/pengumuman
+Content-Type: {{contentType}}
+
+### ✅ LIST PENGUMUMAN DENGAN PAGINATION
+GET {{baseUrl}}/pengumuman?page=1&limit=10
+Content-Type: {{contentType}}
+
+### ✅ DETAIL PENGUMUMAN (PUBLIC)
+GET {{baseUrl}}/pengumuman/1
+Content-Type: {{contentType}}
+
+### 🔒 CREATE PENGUMUMAN (ADMIN)
+POST {{baseUrl}}/pengumuman
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "title": "Pengumuman Penting",
+  "content": "Isi pengumuman",
+  "is_active": true
+}
+
+### 🔒 EDIT PENGUMUMAN (ADMIN)
+PUT {{baseUrl}}/pengumuman/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "title": "Pengumuman Updated",
+  "content": "Isi pengumuman updated",
+  "is_active": true
+}
+
+### 🔒 HAPUS PENGUMUMAN (ADMIN)
+DELETE {{baseUrl}}/pengumuman/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### 🔒 TOGGLE AKTIF/NONAKTIF (ADMIN)
+PUT {{baseUrl}}/pengumuman/1/toggle-active
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+---
+
+### ============================================
+### 4. SERVICE BERITA - AGENDA
+### ============================================
+
+### ✅ LIST AGENDA (PUBLIC)
+GET {{baseUrl}}/agenda
+Content-Type: {{contentType}}
+
+### ✅ LIST AGENDA DENGAN PAGINATION & FILTER
+GET {{baseUrl}}/agenda?page=1&limit=10&category=academic
+Content-Type: {{contentType}}
+
+### ✅ DETAIL AGENDA (PUBLIC)
+GET {{baseUrl}}/agenda/1
+Content-Type: {{contentType}}
+
+### 🔒 CREATE AGENDA (ADMIN)
+POST {{baseUrl}}/agenda
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "title": "Pertemuan Guru",
+  "description": "Pertemuan koordinasi guru",
+  "start_date": "2026-05-10T09:00:00Z",
+  "end_date": "2026-05-10T11:00:00Z",
+  "category": "academic",
+  "location": "Ruang Kepala Sekolah"
+}
+
+### 🔒 EDIT AGENDA (ADMIN)
+PUT {{baseUrl}}/agenda/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "title": "Pertemuan Guru - Updated",
+  "description": "Pertemuan koordinasi guru updated",
+  "start_date": "2026-05-10T09:00:00Z",
+  "end_date": "2026-05-10T11:00:00Z",
+  "category": "academic"
+}
+
+### 🔒 HAPUS AGENDA (ADMIN)
+DELETE {{baseUrl}}/agenda/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### 🔒 TOGGLE AKTIF/NONAKTIF (ADMIN)
+PUT {{baseUrl}}/agenda/1/toggle-active
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+---
+
+### ============================================
+### 5. SERVICE BERITA - SEARCH
+### ============================================
+
+### ✅ SEARCH DENGAN KEYWORD (PUBLIC)
+GET {{baseUrl}}/search?q=berita&limit=20
+Content-Type: {{contentType}}
+
+### ✅ SEARCH DENGAN KEYWORD BERBEDA
+GET {{baseUrl}}/search?q=pengumuman&limit=10
+Content-Type: {{contentType}}
+
+---
+
+### ============================================
+### 6. SERVICE PROFILE - VISI MISI
+### ============================================
+
+### ✅ LIST VISI-MISI (PUBLIC)
+GET {{baseUrl}}/profile/visi-misi
+Content-Type: {{contentType}}
+
+### ✅ DETAIL VISI-MISI (PUBLIC)
+GET {{baseUrl}}/profile/visi-misi/1
+Content-Type: {{contentType}}
+
+### 🔒 CREATE VISI-MISI (ADMIN)
+POST {{baseUrl}}/profile/visi-misi
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "visi": "Menjadi sekolah terkemuka",
+  "misi": "Memberikan pendidikan berkualitas"
+}
+
+### 🔒 EDIT VISI-MISI (ADMIN)
+PUT {{baseUrl}}/profile/visi-misi/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "visi": "Menjadi sekolah terkemuka di bidang teknologi",
+  "misi": "Memberikan pendidikan berkualitas dan inovatif"
+}
+
+### 🔒 HAPUS VISI-MISI (ADMIN)
+DELETE {{baseUrl}}/profile/visi-misi/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+---
+
+### ============================================
+### 7. SERVICE PROFILE - FASILITAS
+### ============================================
+
+### ✅ LIST FASILITAS (PUBLIC)
+GET {{baseUrl}}/profile/fasilitas
+Content-Type: {{contentType}}
+
+### ✅ DETAIL FASILITAS (PUBLIC)
+GET {{baseUrl}}/profile/fasilitas/1
+Content-Type: {{contentType}}
+
+### 🔒 CREATE FASILITAS (ADMIN) - DENGAN FILE UPLOAD
+POST {{baseUrl}}/profile/fasilitas
+Authorization: Bearer {{token}}
+
+< ./test-data/fasilitas-create.txt
+
+### 🔒 EDIT FASILITAS (ADMIN)
+PUT {{baseUrl}}/profile/fasilitas/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "nama": "Lab Komputer Updated",
+  "deskripsi": "Laboratorium komputer terbaru dengan fasilitas lengkap"
+}
+
+### 🔒 HAPUS FASILITAS (ADMIN)
+DELETE {{baseUrl}}/profile/fasilitas/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+---
+
+### ============================================
+### 8. SERVICE PROFILE - PRESTASI
+### ============================================
+
+### ✅ LIST PRESTASI (PUBLIC)
+GET {{baseUrl}}/profile/prestasi
+Content-Type: {{contentType}}
+
+### ✅ DETAIL PRESTASI (PUBLIC)
+GET {{baseUrl}}/profile/prestasi/1
+Content-Type: {{contentType}}
+
+### 🔒 CREATE PRESTASI (ADMIN)
+POST {{baseUrl}}/profile/prestasi
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "nama": "Juara Lomba Robotik",
+  "deskripsi": "Tim robotik menjadi juara nasional",
+  "tahun": 2024,
+  "tingkat": "nasional"
+}
+
+### 🔒 EDIT PRESTASI (ADMIN)
+PUT {{baseUrl}}/profile/prestasi/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "nama": "Juara Lomba Robotik Internasional",
+  "deskripsi": "Tim robotik menjadi juara internasional",
+  "tahun": 2024,
+  "tingkat": "internasional"
+}
+
+### 🔒 HAPUS PRESTASI (ADMIN)
+DELETE {{baseUrl}}/profile/prestasi/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+---
+
+### ============================================
+### 9. SERVICE PROFILE - PROGRAM KEAHLIAN
+### ============================================
+
+### ✅ LIST PROGRAM KEAHLIAN (PUBLIC)
+GET {{baseUrl}}/profile/program-keahlian
+Content-Type: {{contentType}}
+
+### ✅ DETAIL PROGRAM KEAHLIAN (PUBLIC)
+GET {{baseUrl}}/profile/program-keahlian/1
+Content-Type: {{contentType}}
+
+### 🔒 CREATE PROGRAM KEAHLIAN (ADMIN)
+POST {{baseUrl}}/profile/program-keahlian
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "nama": "Teknik Informatika",
+  "deskripsi": "Program keahlian di bidang teknologi informasi",
+  "durasi": 3
+}
+
+### 🔒 EDIT PROGRAM KEAHLIAN (ADMIN)
+PUT {{baseUrl}}/profile/program-keahlian/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "nama": "Teknik Informatika dan Jaringan",
+  "deskripsi": "Program keahlian di bidang teknologi informasi dan jaringan komputer",
+  "durasi": 3
+}
+
+### 🔒 HAPUS PROGRAM KEAHLIAN (ADMIN)
+DELETE {{baseUrl}}/profile/program-keahlian/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+---
+
+### ============================================
+### 10. SERVICE PROFILE - STRUKTUR ORGANISASI
+### ============================================
+
+### ✅ LIST STRUKTUR ORGANISASI (PUBLIC)
+GET {{baseUrl}}/profile/struktur-organisasi
+Content-Type: {{contentType}}
+
+### ✅ DETAIL STRUKTUR ORGANISASI (PUBLIC)
+GET {{baseUrl}}/profile/struktur-organisasi/1
+Content-Type: {{contentType}}
+
+### 🔒 CREATE STRUKTUR ORGANISASI (ADMIN)
+POST {{baseUrl}}/profile/struktur-organisasi
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "nama": "Kepala Sekolah",
+  "deskripsi": "Kepala Sekolah",
+  "jabatan": "Kepala Sekolah"
+}
+
+### 🔒 EDIT STRUKTUR ORGANISASI (ADMIN)
+PUT {{baseUrl}}/profile/struktur-organisasi/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "nama": "Dr. Budi Santoso",
+  "deskripsi": "Kepala Sekolah SMK 3",
+  "jabatan": "Kepala Sekolah"
+}
+
+### 🔒 HAPUS STRUKTUR ORGANISASI (ADMIN)
+DELETE {{baseUrl}}/profile/struktur-organisasi/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+---
+
+### ============================================
+### 11. SERVICE PROFILE - MITRA KERJASAMA
+### ============================================
+
+### ✅ LIST MITRA KERJASAMA (PUBLIC)
+GET {{baseUrl}}/profile/mitra-kerjasama
+Content-Type: {{contentType}}
+
+### ✅ DETAIL MITRA KERJASAMA (PUBLIC)
+GET {{baseUrl}}/profile/mitra-kerjasama/1
+Content-Type: {{contentType}}
+
+### 🔒 CREATE MITRA KERJASAMA (ADMIN)
+POST {{baseUrl}}/profile/mitra-kerjasama
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "nama": "PT Maju Jaya",
+  "bidang": "Teknologi Informasi",
+  "deskripsi": "Partner untuk program magang dan rekrutmen"
+}
+
+### 🔒 EDIT MITRA KERJASAMA (ADMIN)
+PUT {{baseUrl}}/profile/mitra-kerjasama/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "nama": "PT Maju Jaya Indonesia",
+  "bidang": "Teknologi Informasi dan Telekomunikasi",
+  "deskripsi": "Partner untuk program magang, rekrutmen, dan riset"
+}
+
+### 🔒 HAPUS MITRA KERJASAMA (ADMIN)
+DELETE {{baseUrl}}/profile/mitra-kerjasama/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+---
+
+### ============================================
+### 12. SERVICE PROFILE - SEJARAH IDENTITAS
+### ============================================
+
+### ✅ LIST SEJARAH IDENTITAS (PUBLIC)
+GET {{baseUrl}}/profile/sejarah-identitas
+Content-Type: {{contentType}}
+
+### ✅ DETAIL SEJARAH IDENTITAS (PUBLIC)
+GET {{baseUrl}}/profile/sejarah-identitas/1
+Content-Type: {{contentType}}
+
+### 🔒 CREATE SEJARAH IDENTITAS (ADMIN)
+POST {{baseUrl}}/profile/sejarah-identitas
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "judul": "Sejarah Berdirinya Sekolah",
+  "deskripsi": "Sekolah ini didirikan pada tahun 1985..."
+}
+
+### 🔒 EDIT SEJARAH IDENTITAS (ADMIN)
+PUT {{baseUrl}}/profile/sejarah-identitas/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "judul": "Sejarah dan Identitas Sekolah",
+  "deskripsi": "Sekolah ini didirikan pada tahun 1985 sebagai institusi pendidikan..."
+}
+
+### 🔒 HAPUS SEJARAH IDENTITAS (ADMIN)
+DELETE {{baseUrl}}/profile/sejarah-identitas/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+---
+
+### ============================================
+### 13. SERVICE PORTOFOLIO
+### ============================================
+
+### ✅ LIST PORTOFOLIO (PUBLIC)
+GET {{baseUrl}}/portofolio
+Content-Type: {{contentType}}
+
+### ✅ DETAIL PORTOFOLIO (PUBLIC)
+GET {{baseUrl}}/portofolio/1
+Content-Type: {{contentType}}
+
+### 👤 LIST PORTFOLIO MILIK USER (SISWA)
+GET {{baseUrl}}/portofolio/me
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### 👤 LIST PORTFOLIO UNTUK REVIEW (ADMIN)
+GET {{baseUrl}}/portofolio/review
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### 👤 CREATE PORTFOLIO (SISWA)
+POST {{baseUrl}}/portofolio
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "title": "Aplikasi E-Commerce",
+  "description": "Aplikasi e-commerce dengan React dan Node.js",
+  "technologies": ["React", "Node.js", "PostgreSQL"],
+  "link": "https://github.com/user/ecommerce",
+  "image_url": "https://example.com/image.jpg"
+}
+
+### 👤 EDIT PORTFOLIO (SISWA)
+PUT {{baseUrl}}/portofolio/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "title": "Aplikasi E-Commerce v2",
+  "description": "Aplikasi e-commerce dengan React, Node.js, dan MongoDB",
+  "technologies": ["React", "Node.js", "MongoDB"],
+  "link": "https://github.com/user/ecommerce-v2"
+}
+
+### 👤 SUBMIT PORTFOLIO UNTUK REVIEW (SISWA)
+PUT {{baseUrl}}/portofolio/1/submit
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### 👤 PUBLISH PORTFOLIO (ADMIN)
+PUT {{baseUrl}}/portofolio/1/publish
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### 👤 REJECT PORTFOLIO (ADMIN)
+PUT {{baseUrl}}/portofolio/1/reject
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "reason": "Portfolio belum memenuhi standar, silakan revisi"
+}
+
+### 👤 DELETE PORTFOLIO (SISWA)
+DELETE {{baseUrl}}/portofolio/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+---
+
+### ============================================
+### 14. SERVICE PELANGGARAN - SURAT PANGGILAN
+### ============================================
+
+### 👤 GET MASTER DATA SISWA
+GET {{baseUrl}}/pelanggaran/surat-panggilan/master/siswa
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### 👤 GET MASTER DATA GURU
+GET {{baseUrl}}/pelanggaran/surat-panggilan/master/guru
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### 👤 LIST SURAT PANGGILAN (ADMIN)
+GET {{baseUrl}}/pelanggaran/surat-panggilan
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### 👤 CREATE SURAT PANGGILAN (ADMIN)
+POST {{baseUrl}}/pelanggaran/surat-panggilan
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "siswa_id": 1,
+  "guru_id": 1,
+  "pelanggaran": "Terlambat masuk sekolah",
+  "deskripsi": "Siswa sering terlambat masuk sekolah selama 3 hari berturut-turut",
+  "tindakan": "Peringatan lisan"
+}
+
+### 👤 EDIT SURAT PANGGILAN (ADMIN)
+PUT {{baseUrl}}/pelanggaran/surat-panggilan/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "siswa_id": 1,
+  "guru_id": 1,
+  "pelanggaran": "Terlambat masuk sekolah - UPDATED",
+  "deskripsi": "Siswa terlambat masuk sekolah 5 hari dalam sebulan",
+  "tindakan": "Peringatan tulisan"
+}
+
+### 👤 DOWNLOAD SURAT PANGGILAN (PDF) (ADMIN)
+GET {{baseUrl}}/pelanggaran/surat-panggilan/1/pdf
+Authorization: Bearer {{token}}
+
+### 👤 GENERATE WHATSAPP LINK (ADMIN)
+GET {{baseUrl}}/pelanggaran/surat-panggilan/1/whatsapp
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### 👤 MARK SURAT PANGGILAN SELESAI (ADMIN)
+PUT {{baseUrl}}/pelanggaran/surat-panggilan/1/selesai
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### 👤 BATALKAN SURAT PANGGILAN (ADMIN)
+PUT {{baseUrl}}/pelanggaran/surat-panggilan/1/batalkan
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### 👤 DELETE SURAT PANGGILAN (ADMIN)
+DELETE {{baseUrl}}/pelanggaran/surat-panggilan/1
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+---
+
+### ============================================
+### 15. SERVICE MANAGEMENT
+### ============================================
+
+### 👤 ALL MANAGEMENT ENDPOINTS (ADMIN ONLY)
+GET {{baseUrl}}/management
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+### 👤 ALL MANAGEMENT SUB-ENDPOINTS (ADMIN ONLY)
+GET {{baseUrl}}/management/status
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+---
+
+### ============================================
+### TROUBLESHOOTING
+### ============================================
+
+### ❌ TEST 401 - UNAUTHORIZED (TANPA TOKEN)
+GET {{baseUrl}}/berita
+Content-Type: {{contentType}}
+
+### ❌ TEST 403 - FORBIDDEN (TOKEN TAPI ROLE TIDAK SESUAI)
+POST {{baseUrl}}/berita
+Authorization: Bearer {{token}}
+Content-Type: {{contentType}}
+
+{
+  "title": "Test",
+  "content": "Test content"
+}
+
+### ❌ TEST 404 - NOT FOUND (ID TIDAK ADA)
+GET {{baseUrl}}/berita/999999
+Content-Type: {{contentType}}
+
+### ============================================
+### TIPS PENGGUNAAN
+### ============================================
+
+### 1. Ganti variabel di atas:
+###    @baseUrl = http://localhost:8000/api
+###    @token = <JWT_TOKEN_VALID>
+
+### 2. Klik "Send Request" di atas setiap request
+
+### 3. Lihat response di panel sebelah kanan
+
+### 4. Untuk POST/PUT, ubah body JSON sesuai kebutuhan
+
+### 5. Simpan JWT token dari Keycloak login
+
+### CARA MENDAPAT TOKEN:
+### 1. Login ke http://localhost:8080
+### 2. Ambil access token dari response
+### 3. Paste ke @token variable di atas
+
+### Format: Authorization: Bearer <TOKEN>

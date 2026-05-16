@@ -16,8 +16,8 @@ export class CreatePortfolioDto {
   description: string;
 
   @IsString()
-  @IsNotEmpty({ message: 'Nama siswa wajib diisi' })
-  studentName: string;
+  @IsOptional()
+  studentName?: string;
 
   @IsString()
   @IsOptional()

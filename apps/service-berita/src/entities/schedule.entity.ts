@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  Index,
 } from 'typeorm';
 
 export enum ScheduleCategory {
@@ -21,6 +22,7 @@ export class Schedule {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Index()
   @Column({ type: 'varchar', length: 255 })
   title: string;
 
@@ -40,7 +42,7 @@ export class Schedule {
   location: string;
 
   @Column({ type: 'varchar', length: 500, nullable: true })
-  participants: string; // Misal: "Kelas X, XI, XII"
+  participants: string;
 
   @Column({
     type: 'enum',
@@ -55,7 +57,15 @@ export class Schedule {
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
 
+  /** 🔥 AUDIT */
+  @Column({ nullable: true })
+  createdBy: string;
+
+  @Column({ nullable: true })
+  updatedBy: string;
+
   @CreateDateColumn()
+  @Index()
   createdAt: Date;
 
   @UpdateDateColumn()

@@ -1,6 +1,13 @@
 import { DataTypes } from "sequelize";
 import { dbPortofolio } from "../config/database";
 
+export enum PortfolioStatus {
+    DRAFT = 'draft',
+    PENDING_REVIEW = 'pending_review',
+    PUBLISHED = 'published',
+    REJECTED = 'rejected',
+}
+
 const PortofolioModel = dbPortofolio.define("portofolios", {
     id: { 
         type: DataTypes.INTEGER, 
@@ -19,6 +26,16 @@ const PortofolioModel = dbPortofolio.define("portofolios", {
         type: DataTypes.STRING, 
         allowNull: false 
     },
+    ownerUserId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: ''
+    },
+    ownerUsername: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: ''
+    },
     major: { 
         type: DataTypes.STRING, 
         allowNull: true 
@@ -34,6 +51,28 @@ const PortofolioModel = dbPortofolio.define("portofolios", {
     image: { 
         type: DataTypes.TEXT, 
         allowNull: true 
+    },
+    status: {
+        type: DataTypes.ENUM(
+            PortfolioStatus.DRAFT,
+            PortfolioStatus.PENDING_REVIEW,
+            PortfolioStatus.PUBLISHED,
+            PortfolioStatus.REJECTED,
+        ),
+        allowNull: false,
+        defaultValue: PortfolioStatus.DRAFT,
+    },
+    rejectionReason: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    reviewedBy: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    reviewedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
     },
 }, {
     freezeTableName: true,

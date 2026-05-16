@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  Index,
 } from 'typeorm';
 import { News } from './news.entity';
 
@@ -13,6 +14,7 @@ export class Category {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Index()
   @Column({ type: 'varchar', length: 100, unique: true })
   name: string;
 
@@ -29,6 +31,7 @@ export class Category {
   isActive: boolean;
 
   @CreateDateColumn()
+  @Index()
   createdAt: Date;
 
   @UpdateDateColumn()

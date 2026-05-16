@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  Index,
 } from 'typeorm';
 
 export enum AnnouncementType {
@@ -18,6 +19,7 @@ export class Announcement {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Index()
   @Column({ type: 'varchar', length: 255 })
   title: string;
 
@@ -38,7 +40,7 @@ export class Announcement {
   type: AnnouncementType;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  author: string;
+  author: string; // display only
 
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
@@ -46,7 +48,15 @@ export class Announcement {
   @Column({ type: 'timestamp', nullable: true })
   expiredAt: Date;
 
+  /** 🔥 AUDIT */
+  @Column({ nullable: true })
+  createdBy: string;
+
+  @Column({ nullable: true })
+  updatedBy: string;
+
   @CreateDateColumn()
+  @Index()
   createdAt: Date;
 
   @UpdateDateColumn()

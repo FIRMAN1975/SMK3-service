@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  Index,
 } from 'typeorm';
 import { Category } from './category.entity';
 
@@ -14,6 +15,7 @@ export class News {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Index()
   @Column({ type: 'varchar', length: 255 })
   title: string;
 
@@ -26,6 +28,8 @@ export class News {
   @Column({ type: 'text', nullable: true })
   excerpt: string;
 
+  /** 🔥 FIX: slug unique */
+  @Index({ unique: true })
   @Column({ type: 'varchar', length: 255, nullable: true })
   slug: string;
 
@@ -33,7 +37,7 @@ export class News {
   imageUrl: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  author: string;
+  author: string; // display only
 
   @Column({ type: 'int', default: 0 })
   views: number;
@@ -44,14 +48,26 @@ export class News {
   @Column({ type: 'boolean', default: true })
   isActive: boolean;
 
+  /** 🔥 FIX: explicit foreign key */
+  @Column({ nullable: true })
+  categoryId: number;
+
   @ManyToOne(() => Category, (category) => category.news, {
     nullable: true,
     eager: true,
   })
-  @JoinColumn()
+  @JoinColumn({ name: 'categoryId' })
   category: Category;
 
+  /** 🔥 AUDIT */
+  @Column({ nullable: true })
+  createdBy: string;
+
+  @Column({ nullable: true })
+  updatedBy: string;
+
   @CreateDateColumn()
+  @Index()
   createdAt: Date;
 
   @UpdateDateColumn()

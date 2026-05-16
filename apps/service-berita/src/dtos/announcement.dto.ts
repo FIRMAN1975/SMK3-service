@@ -4,10 +4,12 @@ import {
   IsBoolean,
   IsEnum,
   Length,
-  IsISO8601,
   MaxLength,
+  IsDate,
+  IsUrl,
 } from 'class-validator';
-import { AnnouncementType } from '../entities/announcement.entity';
+import { Type } from 'class-transformer';
+import { AnnouncementType } from '../entities';
 
 export class CreateAnnouncementDto {
   @IsString()
@@ -24,19 +26,22 @@ export class CreateAnnouncementDto {
   description?: string;
 
   @IsOptional()
-  @IsString()
+  @IsUrl()
   imageUrl?: string;
 
+  @IsOptional()
   @IsEnum(AnnouncementType)
-  type: AnnouncementType;
+  type?: AnnouncementType;
 
   @IsOptional()
   @IsString()
+  @MaxLength(100)
   author?: string;
 
   @IsOptional()
-  @IsISO8601()
-  expiredAt?: string;
+  @Type(() => Date)
+  @IsDate()
+  expiredAt?: Date;
 }
 
 export class UpdateAnnouncementDto {
@@ -56,7 +61,7 @@ export class UpdateAnnouncementDto {
   description?: string;
 
   @IsOptional()
-  @IsString()
+  @IsUrl()
   imageUrl?: string;
 
   @IsOptional()
@@ -65,6 +70,7 @@ export class UpdateAnnouncementDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(100)
   author?: string;
 
   @IsOptional()
@@ -72,8 +78,9 @@ export class UpdateAnnouncementDto {
   isActive?: boolean;
 
   @IsOptional()
-  @IsISO8601()
-  expiredAt?: string;
+  @Type(() => Date)
+  @IsDate()
+  expiredAt?: Date;
 }
 
 export class AnnouncementResponseDto {

@@ -1,61 +1,100 @@
-version: "3.9"
-
 services:
+  # =======================================================
+  # NGINX REVERSE PROXY (PUBLIC ENTRYPOINT)
+  # =======================================================
+  nginx:
+    image: nginx:alpine
+    container_name: sekolah_nginx
+    restart: unless-stopped
+    ports:
+      - '6766:80'
+    volumes:
+      - ./.docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./.docker/nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - api-gateway
+    networks:
+      smk3_network:
 
-  # ─────────────────────────────────────────
-  # KEYCLOAK — punya DB sendiri (db-keycloak)
-  # ─────────────────────────────────────────
+  # =======================================================
+  # INFRASTRUKTUR INTI
+  # =======================================================
   db-keycloak:
     image: postgres:15
     container_name: db_keycloak
     restart: unless-stopped
     environment:
-      POSTGRES_DB: keycloak
-      POSTGRES_USER: keycloak
-      POSTGRES_PASSWORD: keycloak_pass
+      POSTGRES_DB: ${KC_DB_NAME}
+      POSTGRES_USER: ${KC_DB_USER}
+      POSTGRES_PASSWORD: ${KC_DB_PASS}
     volumes:
       - db_keycloak_data:/var/lib/postgresql/data
     networks:
       - smk3_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${KC_DB_USER} -d ${KC_DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.3
     container_name: sekolah_keycloak
-    command: start-dev
+    command: start-dev --import-realm
     restart: unless-stopped
     environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: Admin@SMK3
+      KEYCLOAK_ADMIN: ${KC_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KC_ADMIN_PASSWORD}
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://db-keycloak:5432/keycloak
-      KC_DB_USERNAME: keycloak
-      KC_DB_PASSWORD: keycloak_pass
-      KC_HOSTNAME_STRICT: "false"
-      KC_HTTP_ENABLED: "true"
+      KC_DB_URL: jdbc:postgresql://db-keycloak:5432/${KC_DB_NAME}
+      KC_DB_USERNAME: ${KC_DB_USER}
+      KC_DB_PASSWORD: ${KC_DB_PASS}
+      KC_HOSTNAME_STRICT: 'false'
+      KC_HTTP_ENABLED: 'true'
     ports:
-      - "8080:8080"
+      - '7312:8080'
+    volumes:
+      - ./.docker/keycloak/import:/opt/keycloak/data/import:ro
     depends_on:
-      - db-keycloak
+      db-keycloak:
+        condition: service_healthy
     networks:
       - smk3_network
 
-  # ─────────────────────────────────────────
-  # DATABASE — 1 DB per service (microservices)
-  # ─────────────────────────────────────────
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: sekolah_rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RMQ_PASS}
+    ports:
+      - '15673:15672'
+    expose:
+      - '5672'
+    networks:
+      - smk3_network
+
+  # =======================================================
+  # DATABASE MICROSERVICES
+  # =======================================================
   db-pelanggaran:
     image: postgres:15
     container_name: db_pelanggaran
     restart: unless-stopped
     environment:
       POSTGRES_DB: db_pelanggaran
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres_pass
-    ports:
-      - "5433:5432"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - db_pelanggaran_data:/var/lib/postgresql/data
     networks:
       - smk3_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d db_pelanggaran"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   db-profile:
     image: postgres:15
@@ -63,14 +102,17 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_DB: db_profile
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres_pass
-    ports:
-      - "5434:5432"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - db_profile_data:/var/lib/postgresql/data
     networks:
       - smk3_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d db_profile"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   db-berita:
     image: postgres:15
@@ -78,14 +120,17 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_DB: db_berita
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres_pass
-    ports:
-      - "5435:5432"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - db_berita_data:/var/lib/postgresql/data
     networks:
       - smk3_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d db_berita"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   db-portofolio:
     image: postgres:15
@@ -93,60 +138,201 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_DB: db_portofolio
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres_pass
-    ports:
-      - "5436:5432"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - db_portofolio_data:/var/lib/postgresql/data
     networks:
       - smk3_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d db_portofolio"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  db-management:
-    image: postgres:15
-    container_name: db_management
+  # db-management:
+  #   image: postgres:15
+  #   container_name: db_management
+  #   restart: unless-stopped
+  #   environment:
+  #     POSTGRES_DB: db_management
+  #     POSTGRES_USER: ${POSTGRES_USER}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #   volumes:
+  #     - db_management_data:/var/lib/postgresql/data
+  #   networks:
+  #     - smk3_network
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d db_management"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  # =======================================================
+  # API GATEWAY
+  # =======================================================
+  api-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: api-gateway
+    container_name: api_gateway
     restart: unless-stopped
+    expose:
+      - '3000'
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
     environment:
-      POSTGRES_DB: db_management
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres_pass
-    ports:
-      - "5437:5432"
-    volumes:
-      - db_management_data:/var/lib/postgresql/data
+      - NODE_ENV=production
+      - INTERNAL_GATEWAY_SECRET=${INTERNAL_GATEWAY_SECRET}
+      - KEYCLOAK_ISSUER=${KEYCLOAK_ISSUER}
+      - KEYCLOAK_JWKS_URL=${KEYCLOAK_JWKS_URL}
+      - KEYCLOAK_CLIENT_ID=${KEYCLOAK_CLIENT_ID}
+      - SERVICE_PELANGGARAN_URL=${SERVICE_PELANGGARAN_URL}
+      - SERVICE_PROFILE_URL=${SERVICE_PROFILE_URL}
+      - SERVICE_BERITA_URL=${SERVICE_BERITA_URL}
+      - SERVICE_PORTOFOLIO_URL=${SERVICE_PORTOFOLIO_URL}
+      # - SERVICE_MANAGEMENT_URL=${SERVICE_MANAGEMENT_URL}
+    depends_on:
+      - keycloak
+      - service-pelanggaran
+      - service-profile
+      - service-berita
+      - service-portofolio
+      # - service-management
     networks:
       - smk3_network
 
-  # ─────────────────────────────────────────
-  # RABBITMQ — message broker antar service
-  # ─────────────────────────────────────────
-  rabbitmq:
-    image: rabbitmq:3-management
-    container_name: sekolah_rabbitmq
+  # =======================================================
+  # NESTJS SERVICES (MONOREPO)
+  # =======================================================
+  service-pelanggaran:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: service-pelanggaran
+    container_name: service_pelanggaran
     restart: unless-stopped
     environment:
-      RABBITMQ_DEFAULT_USER: rmq_user
-      RABBITMQ_DEFAULT_PASS: rmq_pass
-    ports:
-      - "5672:5672"
-      - "15672:15672"
+      - NODE_ENV=production
+      - DATABASE_URL=${DB_PELANGGARAN_URL}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - PORT=${SERVICE_PELANGGARAN_PORT}
+      - INTERNAL_GATEWAY_SECRET=${INTERNAL_GATEWAY_SECRET}
+    depends_on:
+      db-pelanggaran:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
     networks:
       - smk3_network
 
-# ─────────────────────────────────────────
-# VOLUMES — persistent data
-# ─────────────────────────────────────────
+  service-profile:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: service-profile
+    container_name: service_profile
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DB_PROFILE_URL}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - PORT=${SERVICE_PROFILE_PORT}
+      - INTERNAL_GATEWAY_SECRET=${INTERNAL_GATEWAY_SECRET}
+    depends_on:
+      db-profile:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    networks:
+      - smk3_network
+
+  service-berita:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: service-berita
+    container_name: service_berita
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DB_BERITA_URL}
+      - PORT=${SERVICE_BERITA_PORT}
+      - INTERNAL_GATEWAY_SECRET=${INTERNAL_GATEWAY_SECRET}
+      - TYPEORM_SYNC=true
+    depends_on:
+      db-berita:
+        condition: service_healthy
+    networks:
+      - smk3_network
+
+  service-portofolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: service-portofolio
+    container_name: service_portofolio
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DB_PORTOFOLIO_URL}
+      - PORT=${SERVICE_PORTOFOLIO_PORT}
+      - INTERNAL_GATEWAY_SECRET=${INTERNAL_GATEWAY_SECRET}
+    depends_on:
+      db-portofolio:
+        condition: service_healthy
+    networks:
+      - smk3_network
+
+  # service-management:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     args:
+  #       APP_NAME: service-management
+  #   container_name: service_management
+  #   restart: unless-stopped
+  #   environment:
+  #     - NODE_ENV=production
+  #     - DATABASE_URL=${DB_MANAGEMENT_URL}
+  #     - PORT=${SERVICE_MANAGEMENT_PORT}
+  #     - INTERNAL_GATEWAY_SECRET=${INTERNAL_GATEWAY_SECRET}
+  #     - TYPEORM_SYNC=true
+  #   volumes:
+  #     - ./uploads:/app/uploads
+  #   depends_on:
+  #     db-management:
+  #       condition: service_healthy
+  #   networks:
+  #     - smk3_network
+
+# =======================================================
+# PERSISTENT STORAGE
+# =======================================================
 volumes:
   db_keycloak_data:
   db_pelanggaran_data:
   db_profile_data:
   db_berita_data:
   db_portofolio_data:
-  db_management_data:
+  # db_management_data:
 
-# ─────────────────────────────────────────
-# NETWORK — semua container bisa saling komunikasi
-# ─────────────────────────────────────────
+# =======================================================
+# NETWORK VIRTUAL
+# =======================================================
 networks:
   smk3_network:
+    name: smk3-network
     driver: bridge
+    ipam:
+      config:
+        - subnet: 10.20.0.0/16

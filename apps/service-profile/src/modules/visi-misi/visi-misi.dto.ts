@@ -1,19 +1,21 @@
-import { IsString, IsEnum, IsOptional } from 'class-validator';
+import { IsIn, IsOptional, IsString, Length } from 'class-validator';
 
 export class CreateVisiMisiDto {
-  @IsEnum(['visi', 'misi'])
+  @IsIn(['visi', 'misi'])
   tipe: 'visi' | 'misi';
 
   @IsString()
+  @Length(10)
   deskripsi: string;
 }
 
 export class UpdateVisiMisiDto {
   @IsOptional()
-  @IsEnum(['visi', 'misi'])
+  @IsIn(['visi', 'misi'])
   tipe?: 'visi' | 'misi';
 
   @IsOptional()
   @IsString()
+  @Length(10)
   deskripsi?: string;
 }

@@ -1,192 +1,175 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository, Like, DeepPartial } from 'typeorm';
 import { News } from '../entities/news.entity';
-import { CreateNewsDto, UpdateNewsDto } from '../dtos/news.dto';
+import { CreateNewsDto, UpdateNewsDto } from '../dtos';
 import { CategoryService } from './category.service';
 
 @Injectable()
 export class NewsService {
   constructor(
     @InjectRepository(News)
-    private newsRepository: Repository<News>,
+    private repo: Repository<News>,
     private categoryService: CategoryService,
   ) {}
 
-  private generateSlug(title: string): string {
+  private slugify(title: string): string {
     return title
       .toLowerCase()
       .trim()
       .replace(/[^\w\s-]/g, '')
-      .replace(/[\s_-]+/g, '-')
-      .replace(/^-+|-+$/g, '');
+      .replace(/\s+/g, '-');
   }
 
-  async create(createNewsDto: CreateNewsDto): Promise<News> {
-    const news = new News();
-    news.title = createNewsDto.title;
-    news.content = createNewsDto.content;
-    news.excerpt =
-      createNewsDto.excerpt ||
-      createNewsDto.content.substring(0, 150).trim() + '...';
-    news.slug = this.generateSlug(createNewsDto.title);
-    news.imageUrl = createNewsDto.imageUrl || '';
-    news.author = createNewsDto.author || 'Admin';
-    news.isFeatured = createNewsDto.isFeatured || false;
+  private async makeUniqueSlug(title: string, currentId?: number): Promise<string> {
+    const baseSlug = this.slugify(title);
+    let slug = baseSlug;
+    let suffix = 2;
 
-    // 🔥 FIX PENTING
-    news.isActive = true;
+    while (true) {
+      const existing = await this.repo.findOne({ where: { slug } });
+      if (!existing || existing.id === currentId) {
+        return slug;
+      }
 
-    if (createNewsDto.categoryId) {
-      news.category = await this.categoryService.findById(
-        createNewsDto.categoryId,
-      );
+      slug = `${baseSlug}-${suffix}`;
+      suffix += 1;
+    }
+  }
+
+  private async makeUniqueSlugWithRetry(title: string, currentId?: number, maxRetries: number = 5): Promise<string> {
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        return await this.makeUniqueSlug(title, currentId);
+      } catch (error: any) {
+        // Unique constraint violation - retry with suffix
+        if ((error.code === 'ER_DUP_ENTRY' || error.code === '23505') && attempt < maxRetries - 1) {
+          await new Promise(resolve => setTimeout(resolve, 100 * (attempt + 1)));
+          continue;
+        }
+        throw error;
+      }
+    }
+    throw new Error(`Failed to generate unique slug after ${maxRetries} retries`);
+  }
+
+  async create(dto: CreateNewsDto): Promise<News> {
+    // Generate unique slug with retry logic for TOCTOU race conditions
+    let slug: string;
+    try {
+      slug = await this.makeUniqueSlugWithRetry(dto.title);
+    } catch (error) {
+      throw new Error(`Failed to generate unique slug: ${error}`);
     }
 
-    return await this.newsRepository.save(news);
+    const entity = this.repo.create({
+      title: dto.title.trim(),
+      content: dto.content,
+      excerpt: dto.excerpt ?? (dto.content.substring(0, 150) + '...'),
+      slug,
+      imageUrl: dto.imageUrl ?? '',
+      author: dto.author ?? 'Admin',
+      createdBy: dto.author ?? null,
+      isFeatured: dto.isFeatured ?? false,
+      isActive: true,
+    } as DeepPartial<News>);
+
+    if (dto.categoryId) {
+      entity.category = await this.categoryService.findById(dto.categoryId);
+    }
+
+    return this.repo.save(entity);
   }
 
-  async findAll(
-    page: number = 1,
-    limit: number = 10,
-    categoryId?: string,
-  ): Promise<{ data: News[]; total: number; page: number; limit: number }> {
-    const query = this.newsRepository.createQueryBuilder('news');
+  async findAll(page = 1, limit = 10, categoryId?: number) {
+    limit = Math.min(limit, 50);
 
-    // 🔥 FIX: where dulu, baru andWhere
-    query.where('news.isActive = :isActive', { isActive: true });
+    const qb = this.repo
+      .createQueryBuilder('n')
+      .leftJoinAndSelect('n.category', 'c')
+      .where('n.isActive = true');
 
     if (categoryId) {
-      query.andWhere('news.categoryId = :categoryId', { categoryId });
+      qb.andWhere('c.id = :categoryId', { categoryId });
     }
 
-    query.orderBy('news.createdAt', 'DESC');
+    qb.orderBy('n.createdAt', 'DESC');
 
-    const total = await query.getCount();
-    const data = await query
+    const [data, total] = await qb
       .skip((page - 1) * limit)
       .take(limit)
-      .getMany();
+      .getManyAndCount();
 
     return { data, total, page, limit };
   }
 
-  async findFeatured(limit: number = 5): Promise<News[]> {
-    return await this.newsRepository.find({
-      where: { isFeatured: true, isActive: true },
-      order: { createdAt: 'DESC' },
-      take: limit,
-    });
-  }
-
-  async findRecent(limit: number = 10): Promise<News[]> {
-    return await this.newsRepository.find({
-      where: { isActive: true },
-      order: { createdAt: 'DESC' },
-      take: limit,
-    });
-  }
-
   async findById(id: number): Promise<News> {
-    const news = await this.newsRepository.findOne({
-      where: { id },
+    const data = await this.repo.findOne({
+      where: { id, isActive: true },
       relations: ['category'],
     });
 
-    if (!news) {
-      throw new NotFoundException(`Berita dengan ID ${id} tidak ditemukan`);
-    }
+    if (!data) throw new NotFoundException(`News ${id} tidak ditemukan`);
 
-    return news;
+    return data;
   }
 
-  async findBySlug(slug: string): Promise<News> {
-    const news = await this.newsRepository.findOne({
-      where: { slug, isActive: true },
-      relations: ['category'],
-    });
-
-    if (!news) {
-      throw new NotFoundException(
-        `Berita dengan slug ${slug} tidak ditemukan`,
-      );
-    }
-
-    return news;
-  }
-
-  async search(keyword: string, limit: number = 20): Promise<News[]> {
-    return await this.newsRepository.find({
+  async search(keyword: string, limit = 20): Promise<News[]> {
+    return this.repo.find({
       where: [
         { title: Like(`%${keyword}%`), isActive: true },
         { content: Like(`%${keyword}%`), isActive: true },
       ],
       order: { createdAt: 'DESC' },
-      take: limit,
+      take: Math.min(limit, 50),
     });
   }
 
-  async update(id: number, updateNewsDto: UpdateNewsDto): Promise<News> {
-    const news = await this.findById(id);
+  async update(id: number, dto: UpdateNewsDto): Promise<News> {
+    const entity = await this.findById(id);
 
-    if (updateNewsDto.title) {
-      news.title = updateNewsDto.title;
-      news.slug = this.generateSlug(updateNewsDto.title);
+    if (dto.title) {
+      entity.title = dto.title.trim();
+      entity.slug = await this.makeUniqueSlug(dto.title, id);
     }
 
-    if (updateNewsDto.content) {
-      news.content = updateNewsDto.content;
+    if (dto.content) entity.content = dto.content;
+    if (dto.excerpt) entity.excerpt = dto.excerpt;
+    if (dto.imageUrl) entity.imageUrl = dto.imageUrl;
+    if (dto.author) entity.author = dto.author;
+    if (dto.author) entity.updatedBy = dto.author;
+    if (dto.isFeatured !== undefined) entity.isFeatured = dto.isFeatured;
+    if (dto.isActive !== undefined) entity.isActive = dto.isActive;
+
+    if (dto.categoryId) {
+      entity.category = await this.categoryService.findById(dto.categoryId);
     }
 
-    if (updateNewsDto.excerpt) {
-      news.excerpt = updateNewsDto.excerpt;
-    }
-
-    if (updateNewsDto.imageUrl) {
-      news.imageUrl = updateNewsDto.imageUrl;
-    }
-
-    if (updateNewsDto.author) {
-      news.author = updateNewsDto.author;
-    }
-
-    if (updateNewsDto.isFeatured !== undefined) {
-      news.isFeatured = updateNewsDto.isFeatured;
-    }
-
-    if (updateNewsDto.isActive !== undefined) {
-      news.isActive = updateNewsDto.isActive;
-    }
-
-    if (updateNewsDto.categoryId) {
-      news.category = await this.categoryService.findById(
-        updateNewsDto.categoryId,
-      );
-    }
-
-    return await this.newsRepository.save(news);
+    return this.repo.save(entity);
   }
 
   async delete(id: number): Promise<void> {
-    const news = await this.findById(id);
-    await this.newsRepository.remove(news);
+    const entity = await this.findById(id);
+    entity.isActive = false;
+    await this.repo.save(entity);
   }
 
   async incrementViews(id: number): Promise<News> {
-    const news = await this.findById(id);
-    news.views += 1;
-    return await this.newsRepository.save(news);
+    // Use atomic increment to prevent race conditions
+    // This ensures views are incremented safely even with concurrent requests
+    await this.repo.increment({ id }, 'views', 1);
+    return this.findById(id);
   }
 
   async toggleFeatured(id: number): Promise<News> {
-    const news = await this.findById(id);
-    news.isFeatured = !news.isFeatured;
-    return await this.newsRepository.save(news);
+    const entity = await this.findById(id);
+    entity.isFeatured = !entity.isFeatured;
+    return this.repo.save(entity);
   }
 
   async toggleActive(id: number): Promise<News> {
-    const news = await this.findById(id);
-    news.isActive = !news.isActive;
-    return await this.newsRepository.save(news);
+    const entity = await this.findById(id);
+    entity.isActive = !entity.isActive;
+    return this.repo.save(entity);
   }
 }

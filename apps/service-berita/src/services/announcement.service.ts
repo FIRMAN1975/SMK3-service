@@ -1,122 +1,98 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, LessThan } from 'typeorm';
+import { Repository, Brackets, LessThan } from 'typeorm';
 import { Announcement, AnnouncementType } from '../entities/announcement.entity';
-import {
-  CreateAnnouncementDto,
-  UpdateAnnouncementDto,
-} from '../dtos/announcement.dto';
+import { CreateAnnouncementDto, UpdateAnnouncementDto } from '../dtos';
 
 @Injectable()
 export class AnnouncementService {
   constructor(
     @InjectRepository(Announcement)
-    private announcementRepository: Repository<Announcement>,
+    private repo: Repository<Announcement>,
   ) {}
 
-  async create(createAnnouncementDto: CreateAnnouncementDto): Promise<Announcement> {
-    const announcement = this.announcementRepository.create(
-      createAnnouncementDto,
-    );
-    return await this.announcementRepository.save(announcement);
+  async create(dto: CreateAnnouncementDto): Promise<Announcement> {
+    const entity = this.repo.create({
+      ...dto,
+      title: dto.title.trim(),
+      content: dto.content.trim(),
+    });
+
+    return this.repo.save(entity);
   }
 
-  async findAll(
-    page: number = 1,
-    limit: number = 20,
-    type?: AnnouncementType,
-  ): Promise<{
-    data: Announcement[];
-    total: number;
-    page: number;
-    limit: number;
-  }> {
-    const query = this.announcementRepository.createQueryBuilder('announcement');
+  async findAll(page = 1, limit = 20, type?: AnnouncementType) {
+    limit = Math.min(limit, 50);
+
+    const qb = this.repo
+      .createQueryBuilder('a')
+      .where('a.isActive = true')
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where('a.expiredAt IS NULL').orWhere('a.expiredAt > :now', {
+            now: new Date(),
+          });
+        }),
+      );
 
     if (type) {
-      query.where('announcement.type = :type', { type });
+      qb.andWhere('a.type = :type', { type });
     }
 
-    query.andWhere('announcement.isActive = :isActive', { isActive: true });
-    query.orderBy('announcement.createdAt', 'DESC');
+    qb.orderBy('a.createdAt', 'DESC');
 
-    const total = await query.getCount();
-    const data = await query.skip((page - 1) * limit).take(limit).getMany();
+    const [data, total] = await qb
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
 
     return { data, total, page, limit };
   }
 
-  async findByType(
-    type: AnnouncementType,
-    limit: number = 10,
-  ): Promise<Announcement[]> {
-    return await this.announcementRepository.find({
-      where: { type, isActive: true },
-      order: { createdAt: 'DESC' },
-      take: limit,
-    });
-  }
-
   async findById(id: number): Promise<Announcement> {
-    const announcement = await this.announcementRepository.findOne({
-      where: { id },
-    });
+    const data = await this.repo.findOne({ where: { id, isActive: true } });
 
-    if (!announcement) {
-      throw new NotFoundException(
-        `Pengumuman dengan ID ${id} tidak ditemukan`,
-      );
+    if (!data) {
+      throw new NotFoundException(`Pengumuman ${id} tidak ditemukan`);
     }
 
-    return announcement;
+    return data;
   }
 
-  async findActive(): Promise<Announcement[]> {
-    return await this.announcementRepository.find({
-      where: { isActive: true },
-      order: { createdAt: 'DESC' },
-    });
-  }
+  async update(id: number, dto: UpdateAnnouncementDto) {
+    const entity = await this.findById(id);
 
-  async findNotExpired(): Promise<Announcement[]> {
-    const now = new Date();
-    const query = this.announcementRepository.createQueryBuilder('announcement');
+    if (dto.title !== undefined) entity.title = dto.title.trim();
+    if (dto.content !== undefined) entity.content = dto.content.trim();
+    if (dto.description !== undefined) entity.description = dto.description;
+    if (dto.imageUrl !== undefined) entity.imageUrl = dto.imageUrl;
+    if (dto.type !== undefined) entity.type = dto.type;
+    if (dto.author !== undefined) entity.author = dto.author;
+    if (dto.isActive !== undefined) entity.isActive = dto.isActive;
+    if (dto.expiredAt !== undefined)
+      entity.expiredAt = new Date(dto.expiredAt);
 
-    query.where('announcement.isActive = :isActive', { isActive: true });
-    query.andWhere(
-      '(announcement.expiredAt IS NULL OR announcement.expiredAt > :now)',
-      { now },
-    );
-    query.orderBy('announcement.createdAt', 'DESC');
-
-    return await query.getMany();
-  }
-
-  async update(
-    id: number,
-    updateAnnouncementDto: UpdateAnnouncementDto,
-  ): Promise<Announcement> {
-    const announcement = await this.findById(id);
-    Object.assign(announcement, updateAnnouncementDto);
-    return await this.announcementRepository.save(announcement);
+    return this.repo.save(entity);
   }
 
   async delete(id: number): Promise<void> {
-    const announcement = await this.findById(id);
-    await this.announcementRepository.remove(announcement);
+    const entity = await this.findById(id);
+    entity.isActive = false;
+    await this.repo.save(entity);
   }
 
-  async toggleActive(id: number): Promise<Announcement> {
-    const announcement = await this.findById(id);
-    announcement.isActive = !announcement.isActive;
-    return await this.announcementRepository.save(announcement);
+  async toggleActive(id: number) {
+    const entity = await this.findById(id);
+    entity.isActive = !entity.isActive;
+    return this.repo.save(entity);
   }
 
-  async cleanExpiredAnnouncements(): Promise<number> {
-    const result = await this.announcementRepository.delete({
+  async cleanExpired(): Promise<number> {
+    const res = await this.repo.delete({
       expiredAt: LessThan(new Date()),
       isActive: true,
     });
-    return result.affected ?? 0;
+
+    return res.affected ?? 0;
   }
 }

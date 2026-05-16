@@ -1,6 +1,14 @@
 import { DataTypes } from "sequelize";
 import { dbPelanggaran } from "../config/database";
 
+export enum SuratStatus {
+    DRAFT = 'draft',
+    TERBIT = 'terbit',
+    DIKIRIM = 'dikirim',
+    SELESAI = 'selesai',
+    DIBATALKAN = 'dibatalkan',
+}
+
 const SuratPanggilanModel = dbPelanggaran.define("t_surat_panggilan", {
     id: {
         type: DataTypes.UUID,
@@ -36,6 +44,25 @@ const SuratPanggilanModel = dbPelanggaran.define("t_surat_panggilan", {
         type: DataTypes.ARRAY(DataTypes.UUID),
         allowNull: false,
         defaultValue: []
+    },
+    status: {
+        type: DataTypes.ENUM(
+            SuratStatus.DRAFT,
+            SuratStatus.TERBIT,
+            SuratStatus.DIKIRIM,
+            SuratStatus.SELESAI,
+            SuratStatus.DIBATALKAN,
+        ),
+        allowNull: false,
+        defaultValue: SuratStatus.DRAFT,
+    },
+    created_by: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    updated_by: {
+        type: DataTypes.STRING,
+        allowNull: true,
     },
 }, {
     freezeTableName: true,

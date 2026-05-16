@@ -1,0 +1,2137 @@
+{
+  "info": {
+    "_postman_id": "sekolah-monorepo-complete-api",
+    "name": "Sekolah Monorepo - Complete API Testing",
+    "description": "Koleksi lengkap untuk testing semua endpoints dari monorepo services: API Gateway, Service Berita, Service Profile, Service Portofolio, dan Service Pelanggaran",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "API Gateway",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/health",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["health"]
+            },
+            "description": "Check if API Gateway is running"
+          }
+        },
+        {
+          "name": "Get Current User Info",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/auth/me",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["auth", "me"]
+            },
+            "description": "Get current authenticated user info (JWT required)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Service Berita",
+      "item": [
+        {
+          "name": "Berita (News)",
+          "item": [
+            {
+              "name": "Get All News",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:3000/api/berita?page=1&limit=10",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "berita"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                },
+                "description": "Get paginated list of all news (PUBLIC)"
+              }
+            },
+            {
+              "name": "Get News by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:3000/api/berita/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "berita", "1"]
+                },
+                "description": "Get specific news by ID (PUBLIC)"
+              }
+            },
+            {
+              "name": "Create News",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"judul\": \"Judul Berita Baru\",\n  \"isi\": \"Isi dari berita\",\n  \"kategori_id\": 1,\n  \"penulis\": \"Nama Penulis\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/berita",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "berita"]
+                },
+                "description": "Create new news (ADMIN only)"
+              }
+            },
+            {
+              "name": "Update News",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"judul\": \"Judul Berita Diperbarui\",\n  \"isi\": \"Isi berita yang diperbarui\",\n  \"kategori_id\": 1\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/berita/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "berita", "1"]
+                },
+                "description": "Update news (ADMIN/GURU)"
+              }
+            },
+            {
+              "name": "Delete News",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/berita/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "berita", "1"]
+                },
+                "description": "Delete news (ADMIN only)"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Categories",
+          "item": [
+            {
+              "name": "Get All Categories",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:3000/api/categories",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "categories"]
+                },
+                "description": "Get all categories (PUBLIC)"
+              }
+            },
+            {
+              "name": "Get Category by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:3000/api/categories/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "categories", "1"]
+                },
+                "description": "Get category by ID (PUBLIC)"
+              }
+            },
+            {
+              "name": "Create Category",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nama\": \"Kategori Baru\",\n  \"deskripsi\": \"Deskripsi kategori\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/categories",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "categories"]
+                },
+                "description": "Create category (PRIVATE)"
+              }
+            },
+            {
+              "name": "Update Category",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nama\": \"Kategori Diperbarui\",\n  \"deskripsi\": \"Deskripsi diperbarui\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/categories/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "categories", "1"]
+                },
+                "description": "Update category (PRIVATE)"
+              }
+            },
+            {
+              "name": "Toggle Category Active Status",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/categories/1/toggle-active",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "categories", "1", "toggle-active"]
+                },
+                "description": "Toggle category active status (PRIVATE)"
+              }
+            },
+            {
+              "name": "Delete Category",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/categories/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "categories", "1"]
+                },
+                "description": "Delete category (PRIVATE)"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Agenda (Jadwal)",
+          "item": [
+            {
+              "name": "Get All Agenda",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:3000/api/agenda?page=1&limit=100",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "agenda"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    },
+                    {
+                      "key": "category",
+                      "value": "1",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "Get all agenda with pagination & optional filtering by category (PUBLIC)"
+              }
+            },
+            {
+              "name": "Get Agenda by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:3000/api/agenda/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "agenda", "1"]
+                },
+                "description": "Get agenda by ID (PUBLIC)"
+              }
+            },
+            {
+              "name": "Create Agenda",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"judul\": \"Agenda Baru\",\n  \"deskripsi\": \"Deskripsi agenda\",\n  \"tanggal_mulai\": \"2024-05-15\",\n  \"tanggal_berakhir\": \"2024-05-20\",\n  \"kategori_id\": 1\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/agenda",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "agenda"]
+                },
+                "description": "Create agenda (PRIVATE)"
+              }
+            },
+            {
+              "name": "Update Agenda",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"judul\": \"Agenda Diperbarui\",\n  \"deskripsi\": \"Deskripsi diperbarui\",\n  \"tanggal_mulai\": \"2024-05-15\",\n  \"tanggal_berakhir\": \"2024-05-20\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/agenda/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "agenda", "1"]
+                },
+                "description": "Update agenda (PRIVATE)"
+              }
+            },
+            {
+              "name": "Toggle Agenda Active Status",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/agenda/1/toggle-active",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "agenda", "1", "toggle-active"]
+                },
+                "description": "Toggle agenda active status (PRIVATE)"
+              }
+            },
+            {
+              "name": "Delete Agenda",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/agenda/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "agenda", "1"]
+                },
+                "description": "Delete agenda (PRIVATE)"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Pengumuman (Announcements)",
+          "item": [
+            {
+              "name": "Get All Announcements",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:3000/api/pengumuman?page=1&limit=100",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "pengumuman"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    }
+                  ]
+                },
+                "description": "Get all announcements with pagination (PUBLIC)"
+              }
+            },
+            {
+              "name": "Get Announcement by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:3000/api/pengumuman/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "pengumuman", "1"]
+                },
+                "description": "Get announcement by ID (PUBLIC)"
+              }
+            },
+            {
+              "name": "Create Announcement",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"judul\": \"Pengumuman Baru\",\n  \"isi\": \"Isi pengumuman\",\n  \"prioritas\": \"tinggi\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/pengumuman",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "pengumuman"]
+                },
+                "description": "Create announcement (PRIVATE)"
+              }
+            },
+            {
+              "name": "Update Announcement",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"judul\": \"Pengumuman Diperbarui\",\n  \"isi\": \"Isi diperbarui\",\n  \"prioritas\": \"rendah\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/pengumuman/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "pengumuman", "1"]
+                },
+                "description": "Update announcement (PRIVATE)"
+              }
+            },
+            {
+              "name": "Toggle Announcement Active Status",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/pengumuman/1/toggle-active",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "pengumuman", "1", "toggle-active"]
+                },
+                "description": "Toggle announcement active status (PRIVATE)"
+              }
+            },
+            {
+              "name": "Delete Announcement",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/pengumuman/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "pengumuman", "1"]
+                },
+                "description": "Delete announcement (PRIVATE)"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Search",
+          "item": [
+            {
+              "name": "Search News & Announcements",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "http://localhost:3000/api/search?q=berita&limit=20",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "search"],
+                  "query": [
+                    {
+                      "key": "q",
+                      "value": "berita",
+                      "description": "Search keyword (required)"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20",
+                      "description": "Limit results (default: 20)"
+                    }
+                  ]
+                },
+                "description": "Search news & announcements (PUBLIC)"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Service Profile",
+      "item": [
+        {
+          "name": "Fasilitas",
+          "item": [
+            {
+              "name": "Get All Fasilitas",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/fasilitas",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "fasilitas"]
+                },
+                "description": "Get all fasilitas (PRIVATE)"
+              }
+            },
+            {
+              "name": "Get Fasilitas by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/fasilitas/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "fasilitas", "1"]
+                },
+                "description": "Get fasilitas by ID (PRIVATE)"
+              }
+            },
+            {
+              "name": "Create Fasilitas",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "nama",
+                      "value": "Nama Fasilitas",
+                      "type": "text"
+                    },
+                    {
+                      "key": "deskripsi",
+                      "value": "Deskripsi fasilitas",
+                      "type": "text"
+                    },
+                    {
+                      "key": "foto",
+                      "type": "file",
+                      "src": []
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/fasilitas",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "fasilitas"]
+                },
+                "description": "Create fasilitas with optional photo (PRIVATE)"
+              }
+            },
+            {
+              "name": "Update Fasilitas",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "nama",
+                      "value": "Nama Fasilitas Diperbarui",
+                      "type": "text"
+                    },
+                    {
+                      "key": "deskripsi",
+                      "value": "Deskripsi diperbarui",
+                      "type": "text"
+                    },
+                    {
+                      "key": "foto",
+                      "type": "file",
+                      "src": [],
+                      "disabled": true
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/fasilitas/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "fasilitas", "1"]
+                },
+                "description": "Update fasilitas with optional photo (PRIVATE)"
+              }
+            },
+            {
+              "name": "Delete Fasilitas",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/fasilitas/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "fasilitas", "1"]
+                },
+                "description": "Delete fasilitas (PRIVATE)"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Visi Misi",
+          "item": [
+            {
+              "name": "Get All Visi Misi",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/visi-misi",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "visi-misi"]
+                },
+                "description": "Get all visi misi (PRIVATE)"
+              }
+            },
+            {
+              "name": "Get Visi Misi by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/visi-misi/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "visi-misi", "1"]
+                },
+                "description": "Get visi misi by ID (PRIVATE)"
+              }
+            },
+            {
+              "name": "Create Visi Misi",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"visi\": \"Visi sekolah\",\n  \"misi\": \"Misi sekolah\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/visi-misi",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "visi-misi"]
+                },
+                "description": "Create visi misi (PRIVATE)"
+              }
+            },
+            {
+              "name": "Update Visi Misi",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"visi\": \"Visi sekolah diperbarui\",\n  \"misi\": \"Misi sekolah diperbarui\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/visi-misi/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "visi-misi", "1"]
+                },
+                "description": "Update visi misi (PRIVATE)"
+              }
+            },
+            {
+              "name": "Delete Visi Misi",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/visi-misi/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "visi-misi", "1"]
+                },
+                "description": "Delete visi misi (PRIVATE)"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sejarah Identitas",
+          "item": [
+            {
+              "name": "Get All Sejarah Identitas",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/sejarah-identitas",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "sejarah-identitas"]
+                },
+                "description": "Get all sejarah identitas (PRIVATE)"
+              }
+            },
+            {
+              "name": "Get Sejarah Identitas by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/sejarah-identitas/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "sejarah-identitas", "1"]
+                },
+                "description": "Get sejarah identitas by ID (PRIVATE)"
+              }
+            },
+            {
+              "name": "Create Sejarah Identitas",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sejarah\": \"Sejarah sekolah\",\n  \"identitas\": \"Identitas sekolah\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/sejarah-identitas",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "sejarah-identitas"]
+                },
+                "description": "Create sejarah identitas (PRIVATE)"
+              }
+            },
+            {
+              "name": "Update Sejarah Identitas",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"sejarah\": \"Sejarah diperbarui\",\n  \"identitas\": \"Identitas diperbarui\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/sejarah-identitas/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "sejarah-identitas", "1"]
+                },
+                "description": "Update sejarah identitas (PRIVATE)"
+              }
+            },
+            {
+              "name": "Delete Sejarah Identitas",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/sejarah-identitas/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "sejarah-identitas", "1"]
+                },
+                "description": "Delete sejarah identitas (PRIVATE)"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Struktur Organisasi",
+          "item": [
+            {
+              "name": "Get All Struktur Organisasi",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/struktur-organisasi",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "struktur-organisasi"]
+                },
+                "description": "Get all struktur organisasi (PRIVATE)"
+              }
+            },
+            {
+              "name": "Get Struktur Organisasi by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/struktur-organisasi/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "struktur-organisasi", "1"]
+                },
+                "description": "Get struktur organisasi by ID (PRIVATE)"
+              }
+            },
+            {
+              "name": "Create Struktur Organisasi",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "nama",
+                      "value": "Struktur Organisasi",
+                      "type": "text"
+                    },
+                    {
+                      "key": "gambar",
+                      "type": "file",
+                      "src": []
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/struktur-organisasi",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "struktur-organisasi"]
+                },
+                "description": "Create struktur organisasi with image (PRIVATE, image required)"
+              }
+            },
+            {
+              "name": "Update Struktur Organisasi",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "nama",
+                      "value": "Struktur Organisasi Diperbarui",
+                      "type": "text"
+                    },
+                    {
+                      "key": "gambar",
+                      "type": "file",
+                      "src": []
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/struktur-organisasi/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "struktur-organisasi", "1"]
+                },
+                "description": "Update struktur organisasi with image (PRIVATE, image required)"
+              }
+            },
+            {
+              "name": "Delete Struktur Organisasi",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/struktur-organisasi/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "struktur-organisasi", "1"]
+                },
+                "description": "Delete struktur organisasi (PRIVATE)"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mitra Kerjasama",
+          "item": [
+            {
+              "name": "Get All Mitra Kerjasama",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/mitra-kerjasama",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "mitra-kerjasama"]
+                },
+                "description": "Get all mitra kerjasama (PRIVATE)"
+              }
+            },
+            {
+              "name": "Get Mitra Kerjasama by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/mitra-kerjasama/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "mitra-kerjasama", "1"]
+                },
+                "description": "Get mitra kerjasama by ID (PRIVATE)"
+              }
+            },
+            {
+              "name": "Create Mitra Kerjasama",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "nama",
+                      "value": "Nama Mitra Kerjasama",
+                      "type": "text"
+                    },
+                    {
+                      "key": "deskripsi",
+                      "value": "Deskripsi mitra",
+                      "type": "text"
+                    },
+                    {
+                      "key": "logo",
+                      "type": "file",
+                      "src": [],
+                      "disabled": true
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/mitra-kerjasama",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "mitra-kerjasama"]
+                },
+                "description": "Create mitra kerjasama with optional logo (PRIVATE)"
+              }
+            },
+            {
+              "name": "Update Mitra Kerjasama",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "nama",
+                      "value": "Nama Mitra Diperbarui",
+                      "type": "text"
+                    },
+                    {
+                      "key": "deskripsi",
+                      "value": "Deskripsi diperbarui",
+                      "type": "text"
+                    },
+                    {
+                      "key": "logo",
+                      "type": "file",
+                      "src": [],
+                      "disabled": true
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/mitra-kerjasama/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "mitra-kerjasama", "1"]
+                },
+                "description": "Update mitra kerjasama with optional logo (PRIVATE)"
+              }
+            },
+            {
+              "name": "Delete Mitra Kerjasama",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/mitra-kerjasama/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "mitra-kerjasama", "1"]
+                },
+                "description": "Delete mitra kerjasama (PRIVATE)"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Program Keahlian",
+          "item": [
+            {
+              "name": "Get All Program Keahlian",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/program-keahlian",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "program-keahlian"]
+                },
+                "description": "Get all program keahlian (PRIVATE)"
+              }
+            },
+            {
+              "name": "Get Program Keahlian by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/program-keahlian/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "program-keahlian", "1"]
+                },
+                "description": "Get program keahlian by ID (PRIVATE)"
+              }
+            },
+            {
+              "name": "Create Program Keahlian",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nama\": \"Program Keahlian Baru\",\n  \"deskripsi\": \"Deskripsi program\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/program-keahlian",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "program-keahlian"]
+                },
+                "description": "Create program keahlian (PRIVATE)"
+              }
+            },
+            {
+              "name": "Update Program Keahlian",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nama\": \"Program Keahlian Diperbarui\",\n  \"deskripsi\": \"Deskripsi diperbarui\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/program-keahlian/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "program-keahlian", "1"]
+                },
+                "description": "Update program keahlian (PRIVATE)"
+              }
+            },
+            {
+              "name": "Delete Program Keahlian",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/program-keahlian/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "program-keahlian", "1"]
+                },
+                "description": "Delete program keahlian (PRIVATE)"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Prestasi",
+          "item": [
+            {
+              "name": "Get All Prestasi",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/prestasi",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "prestasi"]
+                },
+                "description": "Get all prestasi (PRIVATE)"
+              }
+            },
+            {
+              "name": "Get Prestasi by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/prestasi/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "prestasi", "1"]
+                },
+                "description": "Get prestasi by ID (PRIVATE)"
+              }
+            },
+            {
+              "name": "Create Prestasi",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nama\": \"Prestasi Baru\",\n  \"deskripsi\": \"Deskripsi prestasi\",\n  \"tahun\": 2024\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/prestasi",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "prestasi"]
+                },
+                "description": "Create prestasi (PRIVATE)"
+              }
+            },
+            {
+              "name": "Update Prestasi",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nama\": \"Prestasi Diperbarui\",\n  \"deskripsi\": \"Deskripsi diperbarui\",\n  \"tahun\": 2024\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/prestasi/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "prestasi", "1"]
+                },
+                "description": "Update prestasi (PRIVATE)"
+              }
+            },
+            {
+              "name": "Delete Prestasi",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/profile/prestasi/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "profile", "prestasi", "1"]
+                },
+                "description": "Delete prestasi (PRIVATE)"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Service Portofolio",
+      "item": [
+        {
+          "name": "Portofolio Management",
+          "item": [
+            {
+              "name": "Create Portfolio",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Portfolio Baru\",\n  \"description\": \"Deskripsi portfolio\",\n  \"category\": \"kategori\",\n  \"tags\": [\"tag1\", \"tag2\"]\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/portofolio",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "portofolio"]
+                },
+                "description": "Create portfolio (PRIVATE - Siswa)"
+              }
+            },
+            {
+              "name": "Get All Portfolios",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/portofolio?page=1&limit=10",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "portofolio"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                },
+                "description": "Get all portfolios with query filters (PRIVATE)"
+              }
+            },
+            {
+              "name": "Get Portfolios for Review",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/portofolio/review?page=1&limit=10",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "portofolio", "review"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                },
+                "description": "Get portfolios for review (PRIVATE - Admin)"
+              }
+            },
+            {
+              "name": "Get User's Own Portfolios",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/portofolio/me?page=1&limit=10",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "portofolio", "me"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ]
+                },
+                "description": "Get user's own portfolios (PRIVATE - Siswa)"
+              }
+            },
+            {
+              "name": "Get Portfolio by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/portofolio/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "portofolio", "1"]
+                },
+                "description": "Get portfolio by ID (PRIVATE)"
+              }
+            },
+            {
+              "name": "Update Portfolio",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Portfolio Diperbarui\",\n  \"description\": \"Deskripsi diperbarui\",\n  \"category\": \"kategori baru\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/portofolio/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "portofolio", "1"]
+                },
+                "description": "Update portfolio (PRIVATE - Siswa)"
+              }
+            },
+            {
+              "name": "Delete Portfolio",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/portofolio/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "portofolio", "1"]
+                },
+                "description": "Delete portfolio (PRIVATE - Siswa)"
+              }
+            },
+            {
+              "name": "Submit Portfolio for Review",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/portofolio/1/submit",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "portofolio", "1", "submit"]
+                },
+                "description": "Submit portfolio for review (PRIVATE - Siswa)"
+              }
+            },
+            {
+              "name": "Publish Portfolio",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/portofolio/1/publish",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "portofolio", "1", "publish"]
+                },
+                "description": "Publish portfolio (PRIVATE - Admin)"
+              }
+            },
+            {
+              "name": "Reject Portfolio",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reason\": \"Alasan penolakan\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/portofolio/1/reject",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "portofolio", "1", "reject"]
+                },
+                "description": "Reject portfolio (PRIVATE - Admin)"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Service Pelanggaran",
+      "item": [
+        {
+          "name": "Surat Panggilan",
+          "item": [
+            {
+              "name": "Get Master Data Siswa",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/pelanggaran/surat-panggilan/master/siswa",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "pelanggaran", "surat-panggilan", "master", "siswa"]
+                },
+                "description": "Get master data of all siswa (PRIVATE)"
+              }
+            },
+            {
+              "name": "Get Master Data Guru",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/pelanggaran/surat-panggilan/master/guru",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "pelanggaran", "surat-panggilan", "master", "guru"]
+                },
+                "description": "Get master data of all guru (PRIVATE)"
+              }
+            },
+            {
+              "name": "Create Surat Panggilan",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"siswa_id\": 1,\n  \"guru_id\": 1,\n  \"pelanggaran\": \"Deskripsi pelanggaran\",\n  \"tanggal\": \"2024-05-15\",\n  \"jam\": \"14:00\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/pelanggaran/surat-panggilan",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "pelanggaran", "surat-panggilan"]
+                },
+                "description": "Create surat panggilan (PRIVATE)"
+              }
+            },
+            {
+              "name": "Update Surat Panggilan",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"pelanggaran\": \"Deskripsi pelanggaran diperbarui\",\n  \"tanggal\": \"2024-05-20\",\n  \"jam\": \"15:00\"\n}"
+                },
+                "url": {
+                  "raw": "http://localhost:3000/api/pelanggaran/surat-panggilan/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "pelanggaran", "surat-panggilan", "1"]
+                },
+                "description": "Update surat panggilan (PRIVATE)"
+              }
+            },
+            {
+              "name": "Get All Surat Panggilan",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/pelanggaran/surat-panggilan",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "pelanggaran", "surat-panggilan"]
+                },
+                "description": "Get all surat panggilan (PRIVATE)"
+              }
+            },
+            {
+              "name": "Delete Surat Panggilan",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/pelanggaran/surat-panggilan/1",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "pelanggaran", "surat-panggilan", "1"]
+                },
+                "description": "Delete surat panggilan (PRIVATE)"
+              }
+            },
+            {
+              "name": "Download PDF Surat",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/pelanggaran/surat-panggilan/1/pdf",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "pelanggaran", "surat-panggilan", "1", "pdf"]
+                },
+                "description": "Download surat as PDF (PRIVATE)"
+              }
+            },
+            {
+              "name": "Generate WhatsApp Sharing Link",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/pelanggaran/surat-panggilan/1/whatsapp",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "pelanggaran", "surat-panggilan", "1", "whatsapp"]
+                },
+                "description": "Generate WhatsApp sharing link (PRIVATE)"
+              }
+            },
+            {
+              "name": "Mark Surat as Completed",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/pelanggaran/surat-panggilan/1/selesai",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "pelanggaran", "surat-panggilan", "1", "selesai"]
+                },
+                "description": "Mark surat as completed (PRIVATE)"
+              }
+            },
+            {
+              "name": "Cancel Surat Panggilan",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{jwt_token}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "http://localhost:3000/api/pelanggaran/surat-panggilan/1/batalkan",
+                  "protocol": "http",
+                  "host": ["localhost"],
+                  "port": "3000",
+                  "path": ["api", "pelanggaran", "surat-panggilan", "1", "batalkan"]
+                },
+                "description": "Cancel surat panggilan (PRIVATE)"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ]
+}

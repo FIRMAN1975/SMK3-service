@@ -1,40 +1,79 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { passportJwtSecret } from 'jwks-rsa';
 import { ConfigService } from '@nestjs/config';
+import { JwtPayload, AuthUser } from './auth.types';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private configService: ConfigService) {
-    super({
-      // 1. Ambil token dari header Authorization: Bearer <token>
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    const jwksUri = configService.get<string>('KEYCLOAK_JWKS_URL');
+    const issuer = configService.get<string>('KEYCLOAK_ISSUER');
+    const clientId = configService.get<string>('KEYCLOAK_CLIENT_ID');
 
-      // 2. Jangan terima token yang sudah expired
+    if (!jwksUri || !issuer || !clientId) {
+      throw new Error(
+        'Missing KEYCLOAK config: KEYCLOAK_JWKS_URL / KEYCLOAK_ISSUER / KEYCLOAK_CLIENT_ID',
+      );
+    }
+
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
 
-      // 3. Verifikasi signature pakai public key dari Keycloak JWKS
+      // JWKS (auto key-rotation)
       secretOrKeyProvider: passportJwtSecret({
         cache: true,
         rateLimit: true,
         jwksRequestsPerMinute: 5,
-        jwksUri: configService.get<string>('KEYCLOAK_JWKS_URL')!,  // tambah !
-      }),
+        jwksUri,
+      }),  
 
-      // 4. Validasi issuer — pastikan token dari Keycloak kita, bukan dari tempat lain
-      issuer: configService.get<string>('KEYCLOAK_ISSUER')!,  // tambah !
-      algorithms: ['RS256'],   // Keycloak pakai algoritma RS256
+      issuer,
+      algorithms: ['RS256'],
     });
   }
 
-  // 5. Kalau token valid, method ini dipanggil — return value masuk ke request.user
-  async validate(payload: any) {
+  async validate(payload: JwtPayload): Promise<AuthUser> {
+    // Minimal integrity check
+    if (!payload?.sub || !payload?.preferred_username) {
+      throw new UnauthorizedException('Invalid token payload');
+    }
+
+    const clientId = this.configService.get<string>('KEYCLOAK_CLIENT_ID');
+    if (!clientId) {
+      throw new UnauthorizedException('Client ID not configured');
+    }
+
+    const audiences = Array.isArray(payload.aud)
+      ? payload.aud
+      : payload.aud
+        ? [payload.aud]
+        : [];
+
+    if (payload.azp !== clientId && !audiences.includes(clientId)) {
+      throw new UnauthorizedException('Invalid token client');
+    }
+
+    // Ambil client roles (jika ada)
+    const clientRoles =
+      payload.resource_access?.[clientId]?.roles ?? [];
+
+    // 🔥 Merge + deduplicate roles (realm + client)
+    const roles = Array.from(
+      new Set([
+        ...(payload.realm_access?.roles ?? []),
+        ...clientRoles,
+      ]),
+    );
+
+    // 🔥 Return normalized user (SINGLE SOURCE OF TRUTH)
     return {
-      sub: payload.sub,                          // user ID
-      username: payload.preferred_username,       // guru.budi
-      roles: payload.realm_access?.roles ?? [],   // ['guru', ...]
-      realm_access: payload.realm_access,         // object lengkap untuk RolesGuard
+      sub: payload.sub,
+      username: payload.preferred_username,
+      email: payload.email,
+      roles,
     };
   }
 }

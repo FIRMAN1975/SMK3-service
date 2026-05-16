@@ -1,4 +1,12 @@
-import { IsString, IsOptional, IsBoolean, IsNumber, Length } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsBoolean,
+  IsNumber,
+  Length,
+  MaxLength,
+} from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateCategoryDto {
   @IsString()
@@ -7,6 +15,7 @@ export class CreateCategoryDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(500)
   description?: string;
 
   @IsOptional()
@@ -14,6 +23,7 @@ export class CreateCategoryDto {
   color?: string;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   order?: number;
 }
@@ -26,6 +36,7 @@ export class UpdateCategoryDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(500)
   description?: string;
 
   @IsOptional()
@@ -33,6 +44,7 @@ export class UpdateCategoryDto {
   color?: string;
 
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   order?: number;
 

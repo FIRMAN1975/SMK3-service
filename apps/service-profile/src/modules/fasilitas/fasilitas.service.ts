@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import FasilitasModel from '../../models/FasilitasModel';
 import { CreateFasilitasDto, UpdateFasilitasDto } from './fasilitas.dto';
 
@@ -15,11 +15,25 @@ export class FasilitasService {
   }
 
   async create(dto: CreateFasilitasDto, fotoPath?: string) {
+    const existing = await FasilitasModel.findOne({
+      where: { nama_fasilitas: dto.nama_fasilitas },
+    });
+    if (existing) throw new BadRequestException('Fasilitas sudah terdaftar');
+
     return await FasilitasModel.create({ ...dto, foto: fotoPath } as any);
   }
 
   async update(id: string, dto: UpdateFasilitasDto, fotoPath?: string) {
     const data = await this.findOne(id);
+    if (dto.nama_fasilitas) {
+      const existing = await FasilitasModel.findOne({
+        where: { nama_fasilitas: dto.nama_fasilitas },
+      });
+      if (existing && existing.getDataValue('id') !== id) {
+        throw new BadRequestException('Fasilitas sudah terdaftar');
+      }
+    }
+
     return await data.update({ ...dto, ...(fotoPath && { foto: fotoPath }) });
   }
 

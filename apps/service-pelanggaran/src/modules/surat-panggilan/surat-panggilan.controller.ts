@@ -1,11 +1,19 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, Res } from '@nestjs/common';
-import type { Response } from 'express';
+import { Controller, Get, Post, Put, Delete, Param, Body, Res, Req } from '@nestjs/common';
+import type { Request, Response } from 'express';
 import { SuratPanggilanService } from './surat-panggilan.service';
 import { CreateSuratDto } from './dto/create-surat.dto';
+import { UpdateSuratDto } from './dto/update-surat.dto';
 
 @Controller('surat-panggilan')
 export class SuratPanggilanController {
     constructor(private readonly suratService: SuratPanggilanService) { }
+
+    private getActor(req: Request) {
+        return {
+            userId: req.header('X-User-Id') ?? '',
+            username: req.header('X-User-Name') ?? '',
+        };
+    }
 
     // ==========================================
     // 1. MASTER DATA
@@ -24,13 +32,13 @@ export class SuratPanggilanController {
     // 2. TRANSAKSI (CRUD Surat)
     // ==========================================
     @Post()
-    async createSurat(@Body() createSuratDto: CreateSuratDto) {
-        return await this.suratService.createSurat(createSuratDto);
+    async createSurat(@Body() createSuratDto: CreateSuratDto, @Req() req: Request) {
+        return await this.suratService.createSurat(createSuratDto, this.getActor(req));
     }
 
     @Put(':id')
-    async updateSurat(@Param('id') id: string, @Body() updateSuratDto: CreateSuratDto) {
-        return await this.suratService.updateSurat(id, updateSuratDto);
+    async updateSurat(@Param('id') id: string, @Body() updateSuratDto: UpdateSuratDto, @Req() req: Request) {
+        return await this.suratService.updateSurat(id, updateSuratDto, this.getActor(req));
     }
 
     @Get()
@@ -60,7 +68,17 @@ export class SuratPanggilanController {
     }
 
     @Get(':id/whatsapp')
-    async getWhatsappLink(@Param('id') id: string) {
-        return await this.suratService.generateWhatsappLink(id);
+    async getWhatsappLink(@Param('id') id: string, @Req() req: Request) {
+        return await this.suratService.generateWhatsappLink(id, this.getActor(req));
+    }
+
+    @Put(':id/selesai')
+    async markDone(@Param('id') id: string, @Req() req: Request) {
+        return await this.suratService.markDone(id, this.getActor(req));
+    }
+
+    @Put(':id/batalkan')
+    async cancel(@Param('id') id: string, @Req() req: Request) {
+        return await this.suratService.cancel(id, this.getActor(req));
     }
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import SejarahIdentitasModel from '../../models/SejarahIdentitasModel';
 import {
   CreateSejarahIdentitasDto,
@@ -18,6 +18,11 @@ export class SejarahIdentitasService {
   }
 
   async create(dto: CreateSejarahIdentitasDto) {
+    const count = await SejarahIdentitasModel.count();
+    if (count > 0) {
+      throw new BadRequestException('Sejarah identitas hanya boleh memiliki satu data utama');
+    }
+
     return await SejarahIdentitasModel.create({ ...dto } as any);
   }
 

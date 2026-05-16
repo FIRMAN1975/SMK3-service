@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import MitraKerjaSamaModel from '../../models/MitraKerjaSamaModel';
 import { CreateMitraKerjasamaDto, UpdateMitraKerjasamaDto } from './mitra-kerjasama.dto';
 
@@ -15,11 +15,25 @@ export class MitraKerjasamaService {
   }
 
   async create(dto: CreateMitraKerjasamaDto, logoPath?: string) {
+    const existing = await MitraKerjaSamaModel.findOne({
+      where: { nama_mitra: dto.nama_mitra },
+    });
+    if (existing) throw new BadRequestException('Mitra kerja sama sudah terdaftar');
+
     return await MitraKerjaSamaModel.create({ ...dto, logo: logoPath } as any);
   }
 
   async update(id: string, dto: UpdateMitraKerjasamaDto, logoPath?: string) {
     const data = await this.findOne(id);
+    if (dto.nama_mitra) {
+      const existing = await MitraKerjaSamaModel.findOne({
+        where: { nama_mitra: dto.nama_mitra },
+      });
+      if (existing && existing.getDataValue('id') !== id) {
+        throw new BadRequestException('Mitra kerja sama sudah terdaftar');
+      }
+    }
+
     return await data.update({ ...dto, ...(logoPath && { logo: logoPath }) });
   }
 
