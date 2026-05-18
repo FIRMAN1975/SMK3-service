@@ -1,10 +1,21 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe, Query, Req } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, ParseIntPipe, Query, Req, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname, join } from 'path';
 import type { Request } from 'express';
 import { PortofolioService } from './portofolio.service';
 import { CreatePortfolioDto } from './dto/create-portofolio.dto';
 import { UpdatePortfolioDto } from './dto/update-portofolio.dto';
 import { QueryPortfolioDto } from './dto/query-portofolio.dto';
 import { RejectPortfolioDto } from './dto/reject-portofolio.dto';
+
+const storageConfig = diskStorage({
+  destination: join(process.cwd(), 'uploads'),
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    cb(null, `porto-${uniqueSuffix}${extname(file.originalname)}`);
+  },
+});
 
 @Controller('portofolio')
 export class PortofolioController {
@@ -21,12 +32,20 @@ export class PortofolioController {
         };
     }
 
-    // ==========================================
-    // 1. TRANSAKSI (CRUD Portofolio)
-    // ==========================================
-
+    private getImageUrl(req: Request, filename?: string): string | undefined {
+    if (!filename) return undefined;
+    return `http://localhost:6766/uploads/${filename}`;
+}
     @Post()
-    async create(@Body() dto: CreatePortfolioDto, @Req() req: Request) {
+    @UseInterceptors(FileInterceptor('image', { storage: storageConfig }))
+    async create(
+        @Body() dto: CreatePortfolioDto,
+        @Req() req: Request,
+        @UploadedFile() file?: Express.Multer.File,
+    ) {
+        if (file) {
+            dto.image = this.getImageUrl(req, file.filename);
+        }
         return await this.portfolioService.create(dto, this.getActor(req));
     }
 
@@ -51,11 +70,16 @@ export class PortofolioController {
     }
 
     @Put(':id')
+    @UseInterceptors(FileInterceptor('image', { storage: storageConfig }))
     async update(
-        @Param('id', ParseIntPipe) id: number, 
+        @Param('id', ParseIntPipe) id: number,
         @Body() dto: UpdatePortfolioDto,
         @Req() req: Request,
+        @UploadedFile() file?: Express.Multer.File,
     ) {
+        if (file) {
+            dto.image = this.getImageUrl(req, file.filename);
+        }
         return await this.portfolioService.update(id, dto, this.getActor(req));
     }
 

@@ -63,26 +63,40 @@ export class PortofolioService {
     }
 
     private buildWhere(query: QueryPortfolioDto, actor?: PortfolioActor) {
-        const where: any = {};
+    const where: any = {};
 
-        if (query.major) where.major = query.major;
-        if (query.category) where.category = query.category;
-        if (query.skill) where.skill = query.skill;
-        if (actor?.roles?.includes('admin')) {
-            if (query.status) where.status = query.status;
-        } else {
-            where.status = PortfolioStatus.PUBLISHED;
-        }
+    if (query.major) where.major = query.major;
+    if (query.category) where.category = query.category;
+    if (query.skill) where.skill = query.skill;
 
-        if (query.search) {
-            where[Op.or] = [
-                { title: { [Op.iLike]: `%${query.search}%` } },
-                { studentName: { [Op.iLike]: `%${query.search}%` } },
-            ];
-        }
-
-        return where;
+    // Filter status berdasarkan role
+    if (actor?.roles?.includes('admin')) {
+        if (query.status) where.status = query.status;
+    } else if (actor?.userId) {
+        // Siswa: lihat published ATAU milik sendiri
+        where[Op.or] = [
+            { status: PortfolioStatus.PUBLISHED },
+            { ownerUserId: actor.userId },
+        ];
+    } else {
+        // Guest: hanya published
+        where.status = PortfolioStatus.PUBLISHED;
     }
+
+    // Fix: search pakai Op.and agar tidak menimpa Op.or di atas
+    if (query.search) {
+        where[Op.and] = [
+            {
+                [Op.or]: [
+                    { title: { [Op.iLike]: `%${query.search}%` } },
+                    { studentName: { [Op.iLike]: `%${query.search}%` } },
+                ],
+            },
+        ];
+    }
+
+    return where;
+}
 
     // --- CRUD Transaksi ---
 
@@ -101,7 +115,7 @@ export class PortofolioService {
                 category: payload.category ?? null,
                 skill: payload.skill ?? null,
                 image: payload.image ?? null,
-                status: PortfolioStatus.DRAFT,
+                status: PortfolioStatus.PUBLISHED,
             });
 
             return {

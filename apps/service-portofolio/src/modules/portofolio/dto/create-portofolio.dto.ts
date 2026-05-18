@@ -34,5 +34,5 @@ export class CreatePortfolioDto {
 
   @IsString()
   @IsOptional()
-  image: string; // Ini akan menerima string Base64 dari FileReader di FE
+  image?: string; // Ini akan menerima string Base64 dari FileReader di FE
 }

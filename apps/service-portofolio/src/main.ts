@@ -33,12 +33,11 @@ async function bootstrap() {
     }),
   );
 
-  const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:5173';
-  app.enableCors({
-    origin: corsOrigin.split(',').map((o) => o.trim()),
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    credentials: true,
-  });
+  // =========================================================================
+  // CORS DISETTING STANDAR: Serahkan manajemen header kustom sepenuhnya ke Nginx
+  // =========================================================================
+
+  // =========================================================================
 
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: '/uploads',
