@@ -42,7 +42,6 @@ export class NewsService {
       try {
         return await this.makeUniqueSlug(title, currentId);
       } catch (error: any) {
-        // Unique constraint violation - retry with suffix
         if ((error.code === 'ER_DUP_ENTRY' || error.code === '23505') && attempt < maxRetries - 1) {
           await new Promise(resolve => setTimeout(resolve, 100 * (attempt + 1)));
           continue;
@@ -54,7 +53,6 @@ export class NewsService {
   }
 
   async create(dto: CreateNewsDto): Promise<News> {
-    // Generate unique slug with retry logic for TOCTOU race conditions
     let slug: string;
     try {
       slug = await this.makeUniqueSlugWithRetry(dto.title);
@@ -62,10 +60,14 @@ export class NewsService {
       throw new Error(`Failed to generate unique slug: ${error}`);
     }
 
+    // ✅ Fix: content sekarang optional, jadi harus dicek dulu sebelum dipakai
+    const content = dto.content ?? '';
+    const excerpt = dto.excerpt ?? (content ? content.substring(0, 150) + '...' : '');
+
     const entity = this.repo.create({
       title: dto.title.trim(),
-      content: dto.content,
-      excerpt: dto.excerpt ?? (dto.content.substring(0, 150) + '...'),
+      content,
+      excerpt,
       slug,
       imageUrl: dto.imageUrl ?? '',
       author: dto.author ?? 'Admin',
@@ -155,8 +157,6 @@ export class NewsService {
   }
 
   async incrementViews(id: number): Promise<News> {
-    // Use atomic increment to prevent race conditions
-    // This ensures views are incremented safely even with concurrent requests
     await this.repo.increment({ id }, 'views', 1);
     return this.findById(id);
   }

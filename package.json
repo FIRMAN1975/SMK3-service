@@ -39,6 +39,7 @@
     "handlebars": "^4.7.9",
     "http-proxy-middleware": "^3.0.5",
     "jwks-rsa": "^4.0.1",
+    "multer": "^2.1.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pdfkit": "^0.18.0",
