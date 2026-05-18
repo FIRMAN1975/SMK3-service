@@ -5,7 +5,6 @@ import {
   IsNumber,
   Length,
   MaxLength,
-  IsUrl,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -14,9 +13,10 @@ export class CreateNewsDto {
   @Length(5, 255)
   title: string;
 
+@IsOptional()
   @IsString()
   @Length(10)
-  content: string;
+  content?: string;
 
   @IsOptional()
   @IsString()
@@ -29,8 +29,9 @@ export class CreateNewsDto {
   excerpt?: string;
 
   @IsOptional()
-  @IsUrl()
-  imageUrl?: string;
+@IsString()
+@MaxLength(500)
+imageUrl?: string;
 
   @IsOptional()
   @IsString()
@@ -68,9 +69,10 @@ export class UpdateNewsDto {
   @MaxLength(500)
   excerpt?: string;
 
-  @IsOptional()
-  @IsUrl()
-  imageUrl?: string;
+ @IsOptional()
+@IsString()
+@MaxLength(500)
+imageUrl?: string;
 
   @IsOptional()
   @IsString()
