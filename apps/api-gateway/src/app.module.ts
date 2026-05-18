@@ -20,7 +20,7 @@ import { GatewayController } from './gateway.controller';
     // Rate limiting — max 60 requests per 60 seconds per IP
     ThrottlerModule.forRoot([{
       ttl: 60000,
-      limit: 60,
+      limit: 300,
     }]),
 
     // Proxy module
