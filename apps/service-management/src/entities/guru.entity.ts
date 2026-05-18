@@ -1,28 +1,42 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Index,
+} from 'typeorm';
 
-@Entity({ name: 'guru' })
-export class GuruEntity {
-  @PrimaryGeneratedColumn()
-  id!: number;
+@Entity('guru')
+export class Guru {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @Column({ name: 'nama_lengkap', length: 255 })
-  namaLengkap!: string;
+  @Index()
+  @Column({ type: 'varchar', length: 255 })
+  namaLengkap: string;
 
-  @Column({ length: 50 })
-  nip!: string;
+  @Column({ type: 'varchar', length: 50, default: '' })
+  nip: string;
 
-  @Column({ name: 'no_telepon', length: 20 })
-  noTelepon!: string;
+  @Column({ type: 'varchar', length: 20, default: '' })
+  noTelepon: string;
 
-  @Column({ name: 'anak_wali', length: 255 })
-  anakWali!: string;
+  @Column({ type: 'varchar', length: 255, default: '' })
+  anakWali: string;
 
-  @Column({ name: 'mata_pelajaran', length: 100 })
-  mataPelajaran!: string;
+  @Column({ type: 'varchar', length: 100, default: '' })
+  mataPelajaran: string;
 
-  @Column({ type: 'text' })
-  alamat!: string;
+  @Column({ type: 'text', default: '' })
+  alamat: string;
 
-  @Column({ length: 255 })
-  jabatan!: string;
+  @Column({ type: 'varchar', length: 255, default: '' })
+  jabatan: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

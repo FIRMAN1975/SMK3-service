@@ -150,23 +150,23 @@ services:
       timeout: 5s
       retries: 5
 
-  # db-management:
-  #   image: postgres:15
-  #   container_name: db_management
-  #   restart: unless-stopped
-  #   environment:
-  #     POSTGRES_DB: db_management
-  #     POSTGRES_USER: ${POSTGRES_USER}
-  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-  #   volumes:
-  #     - db_management_data:/var/lib/postgresql/data
-  #   networks:
-  #     - smk3_network
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d db_management"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
+  db-management:
+    image: postgres:15
+    container_name: db_management
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: db_management
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - db_management_data:/var/lib/postgresql/data
+    networks:
+      - smk3_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d db_management"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # =======================================================
   # API GATEWAY
@@ -196,14 +196,14 @@ services:
       - SERVICE_PROFILE_URL=${SERVICE_PROFILE_URL}
       - SERVICE_BERITA_URL=${SERVICE_BERITA_URL}
       - SERVICE_PORTOFOLIO_URL=${SERVICE_PORTOFOLIO_URL}
-      # - SERVICE_MANAGEMENT_URL=${SERVICE_MANAGEMENT_URL}
+      - SERVICE_management_URL=${SERVICE_management_URL}
     depends_on:
       - keycloak
       - service-pelanggaran
       - service-profile
       - service-berita
       - service-portofolio
-      # - service-management
+      - service-management
     networks:
       - smk3_network
 
@@ -293,27 +293,24 @@ services:
     networks:
       - smk3_network
 
-  # service-management:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #     args:
-  #       APP_NAME: service-management
-  #   container_name: service_management
-  #   restart: unless-stopped
-  #   environment:
-  #     - NODE_ENV=production
-  #     - DATABASE_URL=${DB_MANAGEMENT_URL}
-  #     - PORT=${SERVICE_MANAGEMENT_PORT}
-  #     - INTERNAL_GATEWAY_SECRET=${INTERNAL_GATEWAY_SECRET}
-  #     - TYPEORM_SYNC=true
-  #   volumes:
-  #     - ./uploads:/app/uploads
-  #   depends_on:
-  #     db-management:
-  #       condition: service_healthy
-  #   networks:
-  #     - smk3_network
+  service-management:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: service-management
+    container_name: service_management
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DB_management_URL}
+      - PORT=${SERVICE_management_PORT}
+      - INTERNAL_GATEWAY_SECRET=${INTERNAL_GATEWAY_SECRET}
+    depends_on:
+      db-management:
+        condition: service_healthy
+    networks:
+      - smk3_network
 
 # =======================================================
 # PERSISTENT STORAGE
@@ -324,7 +321,8 @@ volumes:
   db_profile_data:
   db_berita_data:
   db_portofolio_data:
-  # db_management_data:
+  db_management_data:
+  management_uploads:        # ← volume khusus untuk file upload siswa
 
 # =======================================================
 # NETWORK VIRTUAL

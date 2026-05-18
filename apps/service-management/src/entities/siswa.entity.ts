@@ -1,44 +1,67 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Index,
+} from 'typeorm';
 
-@Entity({ name: 'siswa' })
-export class SiswaEntity {
-  @PrimaryGeneratedColumn()
-  id!: number;
+@Entity('siswa')
+export class Siswa {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @Column({ name: 'nama_lengkap', type: 'varchar', length: 255 })
-  namaLengkap!: string;
+  /**
+   * Menghubungkan siswa ke akun user di service auth.
+   * Diisi saat siswa pertama kali dibuat/dihubungkan ke akun.
+   */
+  @Index()
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  ownerUserId: string;
 
-  @Column({ type: 'varchar', length: 100 })
-  jurusan!: string;
+  @Index()
+  @Column({ type: 'varchar', length: 255 })
+  namaLengkap: string;
 
-  @Column({ type: 'varchar', length: 50 })
-  nisn!: string;
+  @Column({ type: 'varchar', length: 100, default: '' })
+  jurusan: string;
 
-  @Column({ type: 'varchar', length: 50 })
-  nis!: string;
+  @Column({ type: 'varchar', length: 50, default: '' })
+  nisn: string;
 
-  @Column({ type: 'varchar', length: 20 })
-  kelas!: string;
+  @Column({ type: 'varchar', length: 50, default: '' })
+  nis: string;
 
-  @Column({ name: 'tanggal_lahir', type: 'varchar', length: 20 })
-  tanggalLahir!: string;
+  @Column({ type: 'varchar', length: 20, default: '' })
+  kelas: string;
 
-  @Column({ type: 'text' })
-  alamat!: string;
+  @Column({ type: 'varchar', length: 20, default: '' })
+  tanggalLahir: string;
 
-  @Column({ name: 'no_wa_ortu', type: 'varchar', length: 20 })
-  noWaOrtu!: string;
+  @Column({ type: 'text', default: '' })
+  alamat: string;
 
-  @Column({ type: 'varchar', length: 20 })
-  status!: string;
+  @Column({ type: 'varchar', length: 20, default: '' })
+  noWaOrtu: string;
 
-  // ── PERBAIKAN: Tambah type: 'varchar' & ubah any menjadi string ──
-  @Column({ name: 'rapor_file', type: 'varchar', length: 255, nullable: true })
-  raporFile!: string | null;
+  /** aktif | lulus | nonaktif */
+  @Column({ type: 'varchar', length: 20, default: 'aktif' })
+  status: string;
 
-  @Column({ name: 'skl_file', type: 'varchar', length: 255, nullable: true })
-  sklFile!: string | null;
+  // dokumen
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  raporFile: string;
 
-  @Column({ name: 'ijazah_file', type: 'varchar', length: 255, nullable: true })
-  ijazahFile!: string | null;
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  sklFile: string;
+
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  ijazahFile: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

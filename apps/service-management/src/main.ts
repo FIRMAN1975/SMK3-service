@@ -1,52 +1,42 @@
-import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { mkdirSync } from 'fs';
 import { join } from 'path';
 import { AppModule } from './app.module';
-import { HttpExceptionFilter } from './common/http-exception.filter';
-import { formatValidationErrors } from './common/validation';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  mkdirSync(join(process.cwd(), 'uploads'), { recursive: true });
-  mkdirSync(join(process.cwd(), 'uploads', 'service-management'), {
-    recursive: true,
-  });
-
+  // CORS
   app.enableCors({
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true,
   });
 
+  // Sajikan folder uploads secara publik → http://localhost:PORT/uploads/namafile.pdf
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: '/uploads',
   });
 
+  // Global validation pipe
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: false,
       transform: true,
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
+      transformOptions: { enableImplicitConversion: true },
       stopAtFirstError: true,
-      exceptionFactory: (errors) => {
-        const message = formatValidationErrors(errors);
-        return new BadRequestException(message);
-      },
     }),
   );
 
-  app.useGlobalFilters(new HttpExceptionFilter());
+  // Semua endpoint berada di bawah /api
+  // → /api/management/guru, /api/management/siswa
+  app.setGlobalPrefix('api');
 
-  const port =
-    process.env.PORT ?? process.env.SERVICE_MANAGEMENT_PORT ?? '3005';
+  const port = process.env.PORT ?? process.env.SERVICE_MANAJEMEN_PORT ?? 3004;
   await app.listen(port, '0.0.0.0');
-  console.log(`✅ Service Management running on http://localhost:${port}`);
+  console.log(`✅ Service Manajemen berjalan di http://localhost:${port}/api`);
+  console.log(`📁 Uploads tersedia di http://localhost:${port}/uploads/`);
 }
-
 bootstrap();
