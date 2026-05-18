@@ -59,7 +59,6 @@
         "id": "86186a75-0761-4d77-bb03-b5e56705a84e",
         "name": "siswa",
         "description": "",
-<<<<<<< Updated upstream
         "composite": false,
         "clientRole": false,
         "containerId": "b3af582d-902d-470c-9be9-9dd58c4b8636",
@@ -111,53 +110,6 @@
         "composite": false,
         "clientRole": false,
         "containerId": "b3af582d-902d-470c-9be9-9dd58c4b8636",
-=======
-        "composite": false,
-        "clientRole": false,
-        "containerId": "b3af582d-902d-470c-9be9-9dd58c4b8636",
-        "attributes": {}
-      },
-      {
-        "id": "5e8649d3-6133-4bf3-8535-a0c21c1d5a2b",
-        "name": "uma_authorization",
-        "description": "${role_uma_authorization}",
-        "composite": false,
-        "clientRole": false,
-        "containerId": "b3af582d-902d-470c-9be9-9dd58c4b8636",
-        "attributes": {}
-      },
-      {
-        "id": "1cf481ab-ed6c-4326-9e2c-2b80728717aa",
-        "name": "guru",
-        "description": "",
-        "composite": false,
-        "clientRole": false,
-        "containerId": "b3af582d-902d-470c-9be9-9dd58c4b8636",
-        "attributes": {}
-      },
-      {
-        "id": "fce7dcf4-4ab7-4f14-926d-610618204c7f",
-        "name": "default-roles-smk3",
-        "description": "${role_default-roles}",
-        "composite": true,
-        "composites": {
-          "realm": ["offline_access", "uma_authorization"],
-          "client": {
-            "account": ["view-profile", "manage-account"]
-          }
-        },
-        "clientRole": false,
-        "containerId": "b3af582d-902d-470c-9be9-9dd58c4b8636",
-        "attributes": {}
-      },
-      {
-        "id": "ad832fe5-8177-4805-8cb2-7247decdf58b",
-        "name": "admin",
-        "description": "",
-        "composite": false,
-        "clientRole": false,
-        "containerId": "b3af582d-902d-470c-9be9-9dd58c4b8636",
->>>>>>> Stashed changes
         "attributes": {}
       }
     ],
@@ -167,7 +119,6 @@
           "id": "b842306b-1105-46c5-b32d-73a73650a3fb",
           "name": "view-clients",
           "description": "${role_view-clients}",
-<<<<<<< Updated upstream
           "composite": true,
           "composites": {
             "client": {
@@ -321,156 +272,6 @@
           "composite": true,
           "composites": {
             "client": {
-=======
-          "composite": true,
-          "composites": {
-            "client": {
-              "realm-management": ["query-clients"]
-            }
-          },
-          "clientRole": true,
-          "containerId": "da35900e-7980-44aa-b526-3e5967e9bc61",
-          "attributes": {}
-        },
-        {
-          "id": "33939087-ea1d-4284-a780-77ed6f2e9441",
-          "name": "view-users",
-          "description": "${role_view-users}",
-          "composite": true,
-          "composites": {
-            "client": {
-              "realm-management": ["query-groups", "query-users"]
-            }
-          },
-          "clientRole": true,
-          "containerId": "da35900e-7980-44aa-b526-3e5967e9bc61",
-          "attributes": {}
-        },
-        {
-          "id": "c76af584-8a86-46d6-ae2c-7dcc52915bf9",
-          "name": "manage-identity-providers",
-          "description": "${role_manage-identity-providers}",
-          "composite": false,
-          "clientRole": true,
-          "containerId": "da35900e-7980-44aa-b526-3e5967e9bc61",
-          "attributes": {}
-        },
-        {
-          "id": "c12e81a8-f12f-4e1c-b93f-25fa11ba4cd2",
-          "name": "manage-authorization",
-          "description": "${role_manage-authorization}",
-          "composite": false,
-          "clientRole": true,
-          "containerId": "da35900e-7980-44aa-b526-3e5967e9bc61",
-          "attributes": {}
-        },
-        {
-          "id": "9ff4ace0-318e-4bd6-97c3-8c8c20ad3d67",
-          "name": "impersonation",
-          "description": "${role_impersonation}",
-          "composite": false,
-          "clientRole": true,
-          "containerId": "da35900e-7980-44aa-b526-3e5967e9bc61",
-          "attributes": {}
-        },
-        {
-          "id": "2a7ef1a5-a2b5-4554-a35c-3454ba89004f",
-          "name": "view-realm",
-          "description": "${role_view-realm}",
-          "composite": false,
-          "clientRole": true,
-          "containerId": "da35900e-7980-44aa-b526-3e5967e9bc61",
-          "attributes": {}
-        },
-        {
-          "id": "c36a62b4-9c80-44a2-b163-7402ff3b7389",
-          "name": "create-client",
-          "description": "${role_create-client}",
-          "composite": false,
-          "clientRole": true,
-          "containerId": "da35900e-7980-44aa-b526-3e5967e9bc61",
-          "attributes": {}
-        },
-        {
-          "id": "10779f52-96bc-4593-b4bc-f7d8939bbd7e",
-          "name": "view-authorization",
-          "description": "${role_view-authorization}",
-          "composite": false,
-          "clientRole": true,
-          "containerId": "da35900e-7980-44aa-b526-3e5967e9bc61",
-          "attributes": {}
-        },
-        {
-          "id": "58e81a1a-7cb6-4113-b635-afe0ad299b6f",
-          "name": "query-groups",
-          "description": "${role_query-groups}",
-          "composite": false,
-          "clientRole": true,
-          "containerId": "da35900e-7980-44aa-b526-3e5967e9bc61",
-          "attributes": {}
-        },
-        {
-          "id": "f9bd3f4b-5821-4ec7-8cb0-a8d7fbcde43e",
-          "name": "manage-events",
-          "description": "${role_manage-events}",
-          "composite": false,
-          "clientRole": true,
-          "containerId": "da35900e-7980-44aa-b526-3e5967e9bc61",
-          "attributes": {}
-        },
-        {
-          "id": "d93cdea1-8c12-4020-aeee-b32af46546b5",
-          "name": "manage-realm",
-          "description": "${role_manage-realm}",
-          "composite": false,
-          "clientRole": true,
-          "containerId": "da35900e-7980-44aa-b526-3e5967e9bc61",
-          "attributes": {}
-        },
-        {
-          "id": "8e0c1372-1f5f-45b5-9009-a7c0b4e214db",
-          "name": "query-clients",
-          "description": "${role_query-clients}",
-          "composite": false,
-          "clientRole": true,
-          "containerId": "da35900e-7980-44aa-b526-3e5967e9bc61",
-          "attributes": {}
-        },
-        {
-          "id": "494730d1-4b6e-4ee1-9e77-472a56c1d2fa",
-          "name": "query-realms",
-          "description": "${role_query-realms}",
-          "composite": false,
-          "clientRole": true,
-          "containerId": "da35900e-7980-44aa-b526-3e5967e9bc61",
-          "attributes": {}
-        },
-        {
-          "id": "2522a444-89df-4d51-a780-be744faa1542",
-          "name": "manage-users",
-          "description": "${role_manage-users}",
-          "composite": false,
-          "clientRole": true,
-          "containerId": "da35900e-7980-44aa-b526-3e5967e9bc61",
-          "attributes": {}
-        },
-        {
-          "id": "3347101d-5821-49fa-9584-5ce599108f24",
-          "name": "manage-clients",
-          "description": "${role_manage-clients}",
-          "composite": false,
-          "clientRole": true,
-          "containerId": "da35900e-7980-44aa-b526-3e5967e9bc61",
-          "attributes": {}
-        },
-        {
-          "id": "8af2abfd-4f98-4ec5-af98-ec758ddf0499",
-          "name": "realm-admin",
-          "description": "${role_realm-admin}",
-          "composite": true,
-          "composites": {
-            "client": {
->>>>>>> Stashed changes
               "realm-management": [
                 "view-clients",
                 "view-users",
@@ -603,7 +404,9 @@
           "composite": true,
           "composites": {
             "client": {
-              "account": ["manage-account-links"]
+              "account": [
+                "manage-account-links"
+              ]
             }
           },
           "clientRole": true,
@@ -617,13 +420,9 @@
           "composite": true,
           "composites": {
             "client": {
-<<<<<<< Updated upstream
               "account": [
                 "view-consent"
               ]
-=======
-              "account": ["view-consent"]
->>>>>>> Stashed changes
             }
           },
           "clientRole": true,
@@ -642,7 +441,9 @@
     "clientRole": false,
     "containerId": "b3af582d-902d-470c-9be9-9dd58c4b8636"
   },
-  "requiredCredentials": ["password"],
+  "requiredCredentials": [
+    "password"
+  ],
   "otpPolicyType": "totp",
   "otpPolicyAlgorithm": "HmacSHA1",
   "otpPolicyInitialCounter": 0,
@@ -657,7 +458,9 @@
   ],
   "localizationTexts": {},
   "webAuthnPolicyRpEntityName": "keycloak",
-  "webAuthnPolicySignatureAlgorithms": ["ES256"],
+  "webAuthnPolicySignatureAlgorithms": [
+    "ES256"
+  ],
   "webAuthnPolicyRpId": "",
   "webAuthnPolicyAttestationConveyancePreference": "not specified",
   "webAuthnPolicyAuthenticatorAttachment": "not specified",
@@ -668,7 +471,9 @@
   "webAuthnPolicyAcceptableAaguids": [],
   "webAuthnPolicyExtraOrigins": [],
   "webAuthnPolicyPasswordlessRpEntityName": "keycloak",
-  "webAuthnPolicyPasswordlessSignatureAlgorithms": ["ES256"],
+  "webAuthnPolicyPasswordlessSignatureAlgorithms": [
+    "ES256"
+  ],
   "webAuthnPolicyPasswordlessRpId": "",
   "webAuthnPolicyPasswordlessAttestationConveyancePreference": "not specified",
   "webAuthnPolicyPasswordlessAuthenticatorAttachment": "not specified",
@@ -689,13 +494,9 @@
       "serviceAccountClientId": "api-gateway",
       "disableableCredentialTypes": [],
       "requiredActions": [],
-<<<<<<< Updated upstream
       "realmRoles": [
         "default-roles-smk3"
       ],
-=======
-      "realmRoles": ["default-roles-smk3"],
->>>>>>> Stashed changes
       "notBefore": 0,
       "groups": []
     }
@@ -703,14 +504,19 @@
   "scopeMappings": [
     {
       "clientScope": "offline_access",
-      "roles": ["offline_access"]
+      "roles": [
+        "offline_access"
+      ]
     }
   ],
   "clientScopeMappings": {
     "account": [
       {
         "client": "account-console",
-        "roles": ["manage-account", "view-groups"]
+        "roles": [
+          "manage-account",
+          "view-groups"
+        ]
       }
     ]
   },
@@ -725,13 +531,9 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-<<<<<<< Updated upstream
       "redirectUris": [
         "/realms/smk3/account/*"
       ],
-=======
-      "redirectUris": ["/realms/smk3/account/*"],
->>>>>>> Stashed changes
       "webOrigins": [],
       "notBefore": 0,
       "bearerOnly": false,
@@ -773,13 +575,9 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-<<<<<<< Updated upstream
       "redirectUris": [
         "/realms/smk3/account/*"
       ],
-=======
-      "redirectUris": ["/realms/smk3/account/*"],
->>>>>>> Stashed changes
       "webOrigins": [],
       "notBefore": 0,
       "bearerOnly": false,
@@ -875,17 +673,12 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
-<<<<<<< Updated upstream
       "redirectUris": [
         "*"
       ],
       "webOrigins": [
         "*"
       ],
-=======
-      "redirectUris": ["*"],
-      "webOrigins": ["*"],
->>>>>>> Stashed changes
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -1062,17 +855,12 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-<<<<<<< Updated upstream
       "redirectUris": [
         "/admin/smk3/console/*"
       ],
       "webOrigins": [
         "+"
       ],
-=======
-      "redirectUris": ["/admin/smk3/console/*"],
-      "webOrigins": ["+"],
->>>>>>> Stashed changes
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -1134,17 +922,12 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-<<<<<<< Updated upstream
       "redirectUris": [
         "http://localhost:5173/*"
       ],
       "webOrigins": [
         "http://localhost:5173"
       ],
-=======
-      "redirectUris": ["http://localhost:5173/*"],
-      "webOrigins": ["http://localhost:5173"],
->>>>>>> Stashed changes
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -1763,7 +1546,6 @@
   },
   "smtpServer": {},
   "eventsEnabled": true,
-<<<<<<< Updated upstream
   "eventsListeners": [
     "jboss-logging"
   ],
@@ -1852,94 +1634,6 @@
     "GRANT_CONSENT_ERROR",
     "IDENTITY_PROVIDER_FIRST_LOGIN_ERROR"
   ],
-=======
-  "eventsListeners": ["jboss-logging"],
-  "enabledEventTypes": [
-    "UPDATE_CONSENT_ERROR",
-    "SEND_RESET_PASSWORD",
-    "GRANT_CONSENT",
-    "VERIFY_PROFILE_ERROR",
-    "UPDATE_TOTP",
-    "REMOVE_TOTP",
-    "REVOKE_GRANT",
-    "LOGIN_ERROR",
-    "CLIENT_LOGIN",
-    "RESET_PASSWORD_ERROR",
-    "IMPERSONATE_ERROR",
-    "CODE_TO_TOKEN_ERROR",
-    "CUSTOM_REQUIRED_ACTION",
-    "OAUTH2_DEVICE_CODE_TO_TOKEN_ERROR",
-    "RESTART_AUTHENTICATION",
-    "UPDATE_PROFILE_ERROR",
-    "IMPERSONATE",
-    "LOGIN",
-    "UPDATE_PASSWORD_ERROR",
-    "OAUTH2_DEVICE_VERIFY_USER_CODE",
-    "CLIENT_INITIATED_ACCOUNT_LINKING",
-    "USER_DISABLED_BY_PERMANENT_LOCKOUT",
-    "OAUTH2_EXTENSION_GRANT",
-    "TOKEN_EXCHANGE",
-    "REGISTER",
-    "LOGOUT",
-    "AUTHREQID_TO_TOKEN",
-    "DELETE_ACCOUNT_ERROR",
-    "CLIENT_REGISTER",
-    "IDENTITY_PROVIDER_LINK_ACCOUNT",
-    "USER_DISABLED_BY_TEMPORARY_LOCKOUT",
-    "UPDATE_PASSWORD",
-    "DELETE_ACCOUNT",
-    "FEDERATED_IDENTITY_LINK_ERROR",
-    "CLIENT_DELETE",
-    "IDENTITY_PROVIDER_FIRST_LOGIN",
-    "VERIFY_EMAIL",
-    "CLIENT_DELETE_ERROR",
-    "CLIENT_LOGIN_ERROR",
-    "RESTART_AUTHENTICATION_ERROR",
-    "REMOVE_FEDERATED_IDENTITY_ERROR",
-    "EXECUTE_ACTIONS",
-    "TOKEN_EXCHANGE_ERROR",
-    "PERMISSION_TOKEN",
-    "SEND_IDENTITY_PROVIDER_LINK_ERROR",
-    "EXECUTE_ACTION_TOKEN_ERROR",
-    "SEND_VERIFY_EMAIL",
-    "OAUTH2_EXTENSION_GRANT_ERROR",
-    "OAUTH2_DEVICE_AUTH",
-    "EXECUTE_ACTIONS_ERROR",
-    "REMOVE_FEDERATED_IDENTITY",
-    "OAUTH2_DEVICE_CODE_TO_TOKEN",
-    "IDENTITY_PROVIDER_POST_LOGIN",
-    "IDENTITY_PROVIDER_LINK_ACCOUNT_ERROR",
-    "UPDATE_EMAIL",
-    "OAUTH2_DEVICE_VERIFY_USER_CODE_ERROR",
-    "REGISTER_ERROR",
-    "REVOKE_GRANT_ERROR",
-    "LOGOUT_ERROR",
-    "UPDATE_EMAIL_ERROR",
-    "EXECUTE_ACTION_TOKEN",
-    "CLIENT_UPDATE_ERROR",
-    "UPDATE_PROFILE",
-    "AUTHREQID_TO_TOKEN_ERROR",
-    "FEDERATED_IDENTITY_LINK",
-    "CLIENT_REGISTER_ERROR",
-    "SEND_VERIFY_EMAIL_ERROR",
-    "SEND_IDENTITY_PROVIDER_LINK",
-    "RESET_PASSWORD",
-    "CLIENT_INITIATED_ACCOUNT_LINKING_ERROR",
-    "OAUTH2_DEVICE_AUTH_ERROR",
-    "UPDATE_CONSENT",
-    "REMOVE_TOTP_ERROR",
-    "VERIFY_EMAIL_ERROR",
-    "SEND_RESET_PASSWORD_ERROR",
-    "CLIENT_UPDATE",
-    "IDENTITY_PROVIDER_POST_LOGIN_ERROR",
-    "CUSTOM_REQUIRED_ACTION_ERROR",
-    "UPDATE_TOTP_ERROR",
-    "CODE_TO_TOKEN",
-    "VERIFY_PROFILE",
-    "GRANT_CONSENT_ERROR",
-    "IDENTITY_PROVIDER_FIRST_LOGIN_ERROR"
-  ],
->>>>>>> Stashed changes
   "adminEventsEnabled": false,
   "adminEventsDetailsEnabled": false,
   "identityProviders": [],
@@ -1953,7 +1647,9 @@
         "subType": "anonymous",
         "subComponents": {},
         "config": {
-          "allow-default-scopes": ["true"]
+          "allow-default-scopes": [
+            "true"
+          ]
         }
       },
       {
@@ -1990,43 +1686,27 @@
         "subType": "authenticated",
         "subComponents": {},
         "config": {
-          "allow-default-scopes": ["true"]
+          "allow-default-scopes": [
+            "true"
+          ]
         }
       },
       {
         "id": "b70cc197-494d-4bbf-8a6c-7a3f41c952a4",
         "name": "Trusted Hosts",
         "providerId": "trusted-hosts",
-<<<<<<< Updated upstream
-=======
         "subType": "anonymous",
         "subComponents": {},
         "config": {
-          "host-sending-registration-request-must-match": ["true"],
-          "client-uris-must-match": ["true"]
+          "host-sending-registration-request-must-match": [
+            "true"
+          ],
+          "client-uris-must-match": [
+            "true"
+          ]
         }
       },
       {
-        "id": "720bd667-0a22-42a1-acd3-c63026888c91",
-        "name": "Consent Required",
-        "providerId": "consent-required",
-        "subType": "anonymous",
-        "subComponents": {},
-        "config": {}
-      },
-      {
-        "id": "00ca660f-6607-4665-a2c7-ff7dbd0a3644",
-        "name": "Max Clients Limit",
-        "providerId": "max-clients",
->>>>>>> Stashed changes
-        "subType": "anonymous",
-        "subComponents": {},
-        "config": {
-          "max-clients": ["200"]
-        }
-      },
-      {
-<<<<<<< Updated upstream
         "id": "720bd667-0a22-42a1-acd3-c63026888c91",
         "name": "Consent Required",
         "providerId": "consent-required",
@@ -2053,14 +1733,6 @@
         "subType": "authenticated",
         "subComponents": {},
         "config": {
-=======
-        "id": "cfc0c224-71a5-4936-afc3-d0f105eeb3fd",
-        "name": "Allowed Protocol Mapper Types",
-        "providerId": "allowed-protocol-mappers",
-        "subType": "authenticated",
-        "subComponents": {},
-        "config": {
->>>>>>> Stashed changes
           "allowed-protocol-mapper-types": [
             "oidc-sha256-pairwise-sub-mapper",
             "oidc-full-name-mapper",
@@ -2081,17 +1753,12 @@
         "providerId": "rsa-enc-generated",
         "subComponents": {},
         "config": {
-<<<<<<< Updated upstream
           "priority": [
             "100"
           ],
           "algorithm": [
             "RSA-OAEP"
           ]
-=======
-          "priority": ["100"],
-          "algorithm": ["RSA-OAEP"]
->>>>>>> Stashed changes
         }
       },
       {
@@ -2100,13 +1767,9 @@
         "providerId": "aes-generated",
         "subComponents": {},
         "config": {
-<<<<<<< Updated upstream
           "priority": [
             "100"
           ]
-=======
-          "priority": ["100"]
->>>>>>> Stashed changes
         }
       },
       {
@@ -2115,17 +1778,12 @@
         "providerId": "hmac-generated",
         "subComponents": {},
         "config": {
-<<<<<<< Updated upstream
           "priority": [
             "100"
           ],
           "algorithm": [
             "HS512"
           ]
-=======
-          "priority": ["100"],
-          "algorithm": ["HS512"]
->>>>>>> Stashed changes
         }
       },
       {
@@ -2134,13 +1792,9 @@
         "providerId": "rsa-generated",
         "subComponents": {},
         "config": {
-<<<<<<< Updated upstream
           "priority": [
             "100"
           ]
-=======
-          "priority": ["100"]
->>>>>>> Stashed changes
         }
       }
     ]
