@@ -12,10 +12,6 @@ export class Siswa {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  /**
-   * Menghubungkan siswa ke akun user di service auth.
-   * Diisi saat siswa pertama kali dibuat/dihubungkan ke akun.
-   */
   @Index()
   @Column({ type: 'varchar', length: 255, nullable: true })
   ownerUserId: string;
@@ -45,11 +41,9 @@ export class Siswa {
   @Column({ type: 'varchar', length: 20, default: '' })
   noWaOrtu: string;
 
-  /** aktif | lulus | nonaktif */
   @Column({ type: 'varchar', length: 20, default: 'aktif' })
   status: string;
 
-  // dokumen
   @Column({ type: 'varchar', length: 500, nullable: true })
   raporFile: string;
 

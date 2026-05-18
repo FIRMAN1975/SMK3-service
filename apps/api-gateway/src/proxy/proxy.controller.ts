@@ -448,6 +448,15 @@ proxyProfileDelete(@Req() req: Request, @Res() res: Response) {
   }
 
   /* =========================
+     MANAGEMENT - SISWA FILES (student file download only)
+  ========================= */
+  @Get('management/siswa/:id/download/:type')
+  @Roles(Role.SISWA)
+  proxySiswaDownloadFile(@Req() req: Request, @Res() res: Response) {
+    return this.forward('management', req, res);
+  }
+
+  /* =========================
      MANAGEMENT (admin only)
   ========================= */
   @All('management')

@@ -10,27 +10,23 @@ import {
   HttpCode,
   HttpStatus,
   Res,
-  UseGuards,
   UseInterceptors,
   UploadedFile,
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import type {Response} from 'express';
-import { GuruService } from '../services/guru.service';
-import { CreateGuruDto, UpdateGuruDto } from '../dtos/guru.dto';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
-import { RolesGuard } from '../guards/roles.guard';
-import { Roles } from '../decorators/roles.decorator';
-import { successResponse } from '../common/response';
+import type { Response } from 'express';
+import { GuruService } from './guru.service';
+import { CreateGuruDto, UpdateGuruDto } from './guru.dto';
+
+function successResponse(message: string, data: any) {
+  return { status: 'success', message, data };
+}
 
 @Controller('management/guru')
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('admin')
 export class GuruController {
   constructor(private guruService: GuruService) {}
 
-  // GET /api/management/guru?limit=10&offset=0
   @Get()
   async getAll(
     @Query('limit') limit = 10,
@@ -40,7 +36,6 @@ export class GuruController {
     return successResponse('Berhasil mengambil data guru', data);
   }
 
-  // GET /api/management/guru/search?keyword=...&sortBy=nama&order=asc&limit=10&offset=0
   @Get('search')
   async search(
     @Query('keyword') keyword?: string,
@@ -53,14 +48,12 @@ export class GuruController {
     return successResponse('Berhasil mencari data', data);
   }
 
-  // GET /api/management/guru/total
   @Get('total')
   async getTotal() {
     const data = await this.guruService.getTotalGuru();
     return successResponse('Berhasil mengambil total guru', data);
   }
 
-  // GET /api/management/guru/export
   @Get('export')
   async exportExcel(@Res() res: Response) {
     const buffer = await this.guruService.exportExcel();
@@ -69,14 +62,12 @@ export class GuruController {
     res.send(buffer);
   }
 
-  // GET /api/management/guru/:id
   @Get(':id')
   async getById(@Param('id', ParseUUIDPipe) id: string) {
     const data = await this.guruService.getById(id);
     return successResponse('Berhasil mengambil data', { guru: data });
   }
 
-  // POST /api/management/guru
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() body: CreateGuruDto) {
@@ -84,7 +75,6 @@ export class GuruController {
     return successResponse('Berhasil menambah guru', { guru: data });
   }
 
-  // PUT /api/management/guru/:id
   @Put(':id')
   async update(
     @Param('id', ParseUUIDPipe) id: string,
@@ -94,14 +84,12 @@ export class GuruController {
     return successResponse('Berhasil mengubah data', { guru: data });
   }
 
-  // DELETE /api/management/guru/:id
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('id', ParseUUIDPipe) id: string) {
     await this.guruService.delete(id);
   }
 
-  // POST /api/management/guru/import  (multipart/form-data, field: file)
   @Post('import')
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(FileInterceptor('file'))

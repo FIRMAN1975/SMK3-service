@@ -4,9 +4,9 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, ILike } from 'typeorm';
-import { Guru } from '../entities/guru.entity';
-import { CreateGuruDto, UpdateGuruDto } from '../dtos/guru.dto';
+import { Repository } from 'typeorm';
+import { Guru } from './guru.entity';
+import { CreateGuruDto, UpdateGuruDto } from './guru.dto';
 import * as ExcelJS from 'exceljs';
 
 @Injectable()
@@ -16,9 +16,6 @@ export class GuruService {
     private repo: Repository<Guru>,
   ) {}
 
-  // ───────────────────────────────────────────────
-  // GET ALL (dengan pagination)
-  // ───────────────────────────────────────────────
   async getAll(limit = 10, offset = 0) {
     limit = Math.min(limit, 100);
 
@@ -37,18 +34,12 @@ export class GuruService {
     };
   }
 
-  // ───────────────────────────────────────────────
-  // GET BY ID
-  // ───────────────────────────────────────────────
   async getById(id: string): Promise<Guru> {
     const guru = await this.repo.findOne({ where: { id } });
     if (!guru) throw new NotFoundException('Guru tidak ditemukan');
     return guru;
   }
 
-  // ───────────────────────────────────────────────
-  // CREATE
-  // ───────────────────────────────────────────────
   async create(dto: CreateGuruDto): Promise<Guru> {
     if (!dto.namaLengkap?.trim()) {
       throw new BadRequestException('namaLengkap wajib diisi');
@@ -67,9 +58,6 @@ export class GuruService {
     return this.repo.save(guru);
   }
 
-  // ───────────────────────────────────────────────
-  // UPDATE
-  // ───────────────────────────────────────────────
   async update(id: string, dto: UpdateGuruDto): Promise<Guru> {
     const guru = await this.getById(id);
 
@@ -84,19 +72,11 @@ export class GuruService {
     return this.repo.save(guru);
   }
 
-  // ───────────────────────────────────────────────
-  // DELETE
-  // ───────────────────────────────────────────────
   async delete(id: string): Promise<void> {
     const guru = await this.getById(id);
     await this.repo.remove(guru);
   }
 
-  // ───────────────────────────────────────────────
-  // SEARCH + SORT + PAGINATION
-  // Kolom search : namaLengkap, mataPelajaran
-  // sortBy       : nama | nip | mapel
-  // ───────────────────────────────────────────────
   async search(
     keyword?: string,
     sortBy?: string,
@@ -118,7 +98,7 @@ export class GuruService {
 
     const sortMap: Record<string, string> = {
       nama: 'g.namaLengkap',
-      nip:  'g.nip',
+      nip: 'g.nip',
       mapel: 'g.mataPelajaran',
     };
     const orderCol = sortBy ? sortMap[sortBy] : 'g.createdAt';
@@ -128,17 +108,11 @@ export class GuruService {
     return { guru: data, limit, offset, hasMore: data.length === limit };
   }
 
-  // ───────────────────────────────────────────────
-  // TOTAL COUNT
-  // ───────────────────────────────────────────────
   async getTotalGuru(): Promise<{ total: number }> {
     const total = await this.repo.count();
     return { total };
   }
 
-  // ───────────────────────────────────────────────
-  // EXPORT EXCEL
-  // ───────────────────────────────────────────────
   async exportExcel(): Promise<Buffer> {
     const data = await this.repo.find({ order: { namaLengkap: 'ASC' } });
 
@@ -170,9 +144,6 @@ export class GuruService {
     return workbook.xlsx.writeBuffer() as unknown as Promise<Buffer>;
   }
 
-  // ───────────────────────────────────────────────
-  // IMPORT EXCEL
-  // ───────────────────────────────────────────────
   async importExcel(fileBuffer: Buffer): Promise<{ imported: number; skipped: number }> {
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.load(fileBuffer as any);
@@ -185,17 +156,16 @@ export class GuruService {
     let imported = 0;
     let skipped = 0;
 
-    // Baris 1 = header → mulai dari baris 2
     sheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
-      if (rowNumber === 1) return; // skip header
+      if (rowNumber === 1) return;
 
-      const nip         = String(row.getCell(1).value ?? '').trim();
+      const nip = String(row.getCell(1).value ?? '').trim();
       const namaLengkap = String(row.getCell(2).value ?? '').trim();
       const mataPelajaran = String(row.getCell(3).value ?? '').trim();
-      const jabatan     = String(row.getCell(4).value ?? '').trim();
-      const noTelepon   = String(row.getCell(5).value ?? '').trim();
-      const anakWali    = String(row.getCell(6).value ?? '').trim();
-      const alamat      = String(row.getCell(7).value ?? '').trim();
+      const jabatan = String(row.getCell(4).value ?? '').trim();
+      const noTelepon = String(row.getCell(5).value ?? '').trim();
+      const anakWali = String(row.getCell(6).value ?? '').trim();
+      const alamat = String(row.getCell(7).value ?? '').trim();
 
       if (!namaLengkap) { skipped++; return; }
 
@@ -207,7 +177,6 @@ export class GuruService {
         .catch(() => skipped++);
     });
 
-    // Tunggu sebentar agar semua promise selesai
     await new Promise((r) => setTimeout(r, 500));
 
     return { imported, skipped };

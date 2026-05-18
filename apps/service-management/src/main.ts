@@ -7,19 +7,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // CORS
-  app.enableCors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    credentials: true,
-  });
-
-  // Sajikan folder uploads secara publik → http://localhost:PORT/uploads/namafile.pdf
-  app.useStaticAssets(join(process.cwd(), 'uploads'), {
-    prefix: '/uploads',
-  });
-
-  // Global validation pipe
+  app.setGlobalPrefix('api');
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -30,13 +18,20 @@ async function bootstrap() {
     }),
   );
 
-  // Semua endpoint berada di bawah /api
-  // → /api/management/guru, /api/management/siswa
-  app.setGlobalPrefix('api');
+  const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:5173';
+  app.enableCors({
+    origin: corsOrigin.split(',').map((o) => o.trim()),
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    credentials: true,
+  });
 
-  const port = process.env.PORT ?? process.env.SERVICE_MANAJEMEN_PORT ?? 3004;
-  await app.listen(port, '0.0.0.0');
-  console.log(`✅ Service Manajemen berjalan di http://localhost:${port}/api`);
-  console.log(`📁 Uploads tersedia di http://localhost:${port}/uploads/`);
+  app.useStaticAssets(join(process.cwd(), 'uploads'), {
+    prefix: '/uploads',
+  });
+
+  const port = process.env.PORT ?? 3004;
+  await app.listen(port);
+  console.log(`🚀 Service Management running on http://localhost:${port}/api`);
+  console.log(`📁 Static files  : http://localhost:${port}/uploads`);
 }
 bootstrap();
