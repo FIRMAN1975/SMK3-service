@@ -27,6 +27,14 @@ const storage = diskStorage({
     cb(null, `${Date.now()}${extname(file.originalname)}`),
 });
 
+// Multer file size limits (50MB max file size)
+const multerOptions = {
+  storage,
+  limits: {
+    fileSize: 50 * 1024 * 1024, // 50MB
+  },
+};
+
 @Controller('berita')
 export class BeritaController {
   constructor(private newsService: NewsService) {}
@@ -49,7 +57,7 @@ export class BeritaController {
   // FileInterceptor('gambar') → key harus sama persis dengan FE (beritaApi.js: fd.append('gambar', ...))
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @UseInterceptors(FileInterceptor('gambar', { storage }))
+  @UseInterceptors(FileInterceptor('gambar', multerOptions))
   async create(
     @UploadedFile() file: Express.Multer.File,
     @Body() body: CreateNewsDto,
@@ -63,7 +71,7 @@ export class BeritaController {
 
   // 🔥 ADMIN + GURU boleh update
   @Put(':id')
-  @UseInterceptors(FileInterceptor('gambar', { storage }))
+  @UseInterceptors(FileInterceptor('gambar', multerOptions))
   async update(
     @Param('id', ParseIntPipe) id: number,
     @UploadedFile() file: Express.Multer.File,

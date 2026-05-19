@@ -7,6 +7,10 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  // Configure body parser to accept larger payloads (default: 100kb)
+  app.use(require('express').json({ limit: '50mb' }));
+  app.use(require('express').urlencoded({ limit: '50mb', extended: true }));
+
   // Enable CORS
   app.enableCors({
     origin: '*',
