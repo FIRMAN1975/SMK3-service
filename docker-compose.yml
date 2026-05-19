@@ -11,6 +11,7 @@ services:
     volumes:
       - ./.docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./.docker/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./uploads:/var/www/uploads:ro
     depends_on:
       - api-gateway
     networks:
@@ -268,6 +269,8 @@ services:
       - PORT=${SERVICE_BERITA_PORT}
       - INTERNAL_GATEWAY_SECRET=${INTERNAL_GATEWAY_SECRET}
       - TYPEORM_SYNC=true
+    volumes:
+      - ./uploads:/app/uploads
     depends_on:
       db-berita:
         condition: service_healthy

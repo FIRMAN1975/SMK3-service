@@ -463,6 +463,15 @@ proxyProfileDelete(@Req() req: Request, @Res() res: Response) {
   }
 
   /* =========================
+     UPLOADS (static files - public)
+  ========================= */
+  @Get('uploads/*path')
+  @Public()
+  proxyUploads(@Req() req: Request, @Res() res: Response) {
+    return this.forward('berita', req, res);
+  }
+
+  /* =========================
      CORE FORWARD FUNCTION
   ========================= */
   private forward(service: string, req: Request, res: Response) {
