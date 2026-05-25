@@ -26,9 +26,23 @@ export class PortofolioController {
     // ==========================================
 
     @Post()
+<<<<<<< Updated upstream
     async create(@Body() dto: CreatePortfolioDto, @Req() req: Request) {
+=======
+    @UseInterceptors(FileInterceptor('image', { storage: storageConfig }))
+    async create(
+        @Body() dto: CreatePortfolioDto,
+        @Req() req: Request,
+        @UploadedFile() file?: Express.Multer.File,
+    ) {
+        // Jika ada file gambar yang diunggah, kita timpa isi dto.image secara tegas dengan string URL
+        if (file && file.filename) {
+            dto.image = `http://localhost:6766/uploads/${file.filename}`;
+        }
+>>>>>>> Stashed changes
         return await this.portfolioService.create(dto, this.getActor(req));
     }
+
 
     @Get()
     async getAll(@Query() query: QueryPortfolioDto, @Req() req: Request) {
@@ -56,6 +70,20 @@ export class PortofolioController {
         @Body() dto: UpdatePortfolioDto,
         @Req() req: Request,
     ) {
+<<<<<<< Updated upstream
+=======
+        // Jika ada file baru, timpa ke dto.image. 
+        // Jika tidak ada file baru, kita biarkan dto.image apa adanya agar tidak merusak data lama
+        if (file && file.filename) {
+            dto.image = `http://localhost:6766/uploads/${file.filename}`;
+        } else {
+            // Pengaman: Jika frontend mengirim string "[object Object]" karena tidak ganti gambar, 
+            // kita set jadi undefined agar service NestJS tahu untuk mengabaikannya (tidak diupdate ke DB)
+            if (dto.image && typeof dto.image !== 'string') {
+                dto.image = undefined;
+            }
+        }
+>>>>>>> Stashed changes
         return await this.portfolioService.update(id, dto, this.getActor(req));
     }
 

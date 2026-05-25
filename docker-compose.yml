@@ -287,12 +287,13 @@ services:
       - DATABASE_URL=${DB_PORTOFOLIO_URL}
       - PORT=${SERVICE_PORTOFOLIO_PORT}
       - INTERNAL_GATEWAY_SECRET=${INTERNAL_GATEWAY_SECRET}
+    ports:
+      - '3004:3004'
     depends_on:
       db-portofolio:
         condition: service_healthy
     networks:
       - smk3_network
-
   # service-management:
   #   build:
   #     context: .

@@ -23,6 +23,18 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
+  app.enableCors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: [
+      'Content-Type',
+      'X-User-Id',
+      'X-User-Name',
+      'X-User-Roles',
+      'x-gateway-secret',
+    ],
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -33,6 +45,7 @@ async function bootstrap() {
     }),
   );
 
+<<<<<<< Updated upstream
   const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:5173';
   app.enableCors({
     origin: corsOrigin.split(',').map((o) => o.trim()),
@@ -40,6 +53,8 @@ async function bootstrap() {
     credentials: true,
   });
 
+=======
+>>>>>>> Stashed changes
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: '/uploads',
   });
